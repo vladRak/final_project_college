@@ -7,11 +7,7 @@ import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,41 +20,54 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
     }
 
     @Override
-    public Optional<Application> deactivate(long applicationId) {
-        return null;
-    }
-
-    @Override
-    public Optional<Application> changeStatus(long applicationId, long statusId) {
-        return null;
-    }
-
-    @Override
-    public List<Application> getApplicationsByApplicantId(long applicantId) throws DataAccessException {
-        List<Application> list;
-
-        try (PreparedStatement ps = connection
-                .prepareStatement(queryManager.getQuery("application.findApplicationsByApplicantId"))) {
-            ps.setLong(1, applicantId);
-
-            try (ResultSet resultSet = ps.executeQuery()) {
-                list = new ArrayList<>();
-                while (resultSet.next()) {
-                    list.add(processApplicationRow(resultSet));
-                }
-            }
+    public List<Application> getApplicationsByApplicantId(long applicantId)
+            throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("application.findApplicationsByApplicantId"),
+                    (rs) ->
+                            Application.builder()
+                                    .id(rs.getLong("id"))
+                                    .active(rs.getBoolean("active"))
+                                    .contract(rs.getBoolean("contract"))
+                                    .priority(rs.getByte("priority"))
+                                    .created(rs.getTimestamp("created"))
+                                    .applicantId(rs.getLong("applicant_id"))
+                                    .collegeId(rs.getLong("college_id"))
+                                    .specialtyId(rs.getLong("specialty_id"))
+                                    .statusId(rs.getLong("status_id"))
+                                    .build(),
+                    applicantId
+            );
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-        return list;
+    }
+
+    @Override
+    public List<Application> getApplicationsByCollegeId(long collegeId) {
+        return null;
+    }
+
+    @Override
+    public List<Application> getApplicationsBySpecialtyId(long specialtyId) {
+        return null;
+    }
+
+    @Override
+    public List<Application> getApplicationsByStatusId(long statusId) {
+        return null;
     }
 
     @Override
     public int getNumberOfRows() throws DataAccessException {
         try {
-            return getNumberOfRows("application.count");
+
+            return getNumberOfRows(queryManager
+                    .getQuery("application.count"));
+
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -67,43 +76,74 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
     }
 
     @Override
-    public List<Application> findAllPaginated(int start, int count) throws DataAccessException {
-        List<Application> list;
-
-        try (ResultSet resultSet = findAllPaginated(start, count, "applicant.findAllPaginated")) {
-            list = new ArrayList<>();
-            while (resultSet.next()) {
-                list.add(processApplicationRow(resultSet));
-            }
+    public List<Application> findAllPaginated(int start, int count)
+            throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findAllPaginated"),
+                    (rs) ->
+                            Application.builder()
+                                    .id(rs.getLong("id"))
+                                    .active(rs.getBoolean("active"))
+                                    .contract(rs.getBoolean("contract"))
+                                    .priority(rs.getByte("priority"))
+                                    .created(rs.getTimestamp("created"))
+                                    .applicantId(rs.getLong("applicant_id"))
+                                    .collegeId(rs.getLong("college_id"))
+                                    .specialtyId(rs.getLong("specialty_id"))
+                                    .statusId(rs.getLong("status_id"))
+                                    .build(),
+                    start,
+                    count
+            );
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-        return list;
     }
 
     @Override
     public List<Application> findAll() throws DataAccessException {
-        List<Application> list;
-
-        try (ResultSet resultSet = findAll("applicant.findAll")) {
-            list = new ArrayList<>();
-            while (resultSet.next()) {
-                list.add(processApplicationRow(resultSet));
-            }
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findAll"),
+                    (rs) ->
+                            Application.builder()
+                                    .id(rs.getLong("id"))
+                                    .active(rs.getBoolean("active"))
+                                    .contract(rs.getBoolean("contract"))
+                                    .priority(rs.getByte("priority"))
+                                    .created(rs.getTimestamp("created"))
+                                    .applicantId(rs.getLong("applicant_id"))
+                                    .collegeId(rs.getLong("college_id"))
+                                    .specialtyId(rs.getLong("specialty_id"))
+                                    .statusId(rs.getLong("status_id"))
+                                    .build());
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-        return list;
     }
 
     @Override
     public Optional<Application> getEntityById(long id) throws DataAccessException {
         try {
-            return Optional.ofNullable(processApplicationRow(getEntityById(id, "application.findById")));
+            return queryManager.select(
+                    queryManager.getQuery("application.findById"),
+                    (rs) -> Application.builder()
+                            .id(rs.getLong("id"))
+                            .active(rs.getBoolean("active"))
+                            .contract(rs.getBoolean("contract"))
+                            .priority(rs.getByte("priority"))
+                            .created(rs.getTimestamp("created"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .collegeId(rs.getLong("college_id"))
+                            .specialtyId(rs.getLong("specialty_id"))
+                            .statusId(rs.getLong("status_id"))
+                            .build(),
+                    id).stream().findFirst();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -114,7 +154,10 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
     @Override
     public boolean deleteById(long id) throws DataAccessException {
         try {
-            return deleteById(id, "application.delete");
+
+            return deleteById(id, queryManager
+                    .getQuery("application.delete"));
+
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -124,40 +167,42 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
 
     @Override
     public Application create(Application entity) throws DataAccessException {
-        try (PreparedStatement ps = connection.prepareStatement(
-                queryManager.getQuery("applicant.create"),
-                Statement.RETURN_GENERATED_KEYS)) {
+        try {
+            entity.setId(queryManager.insertAndGetId(
+                    queryManager.getQuery("application.create"),
+                    entity.isActive(),
+                    entity.isContract(),
+                    entity.getPriority(),
+                    entity.getCreated(),
+                    entity.getApplicantId(),
+                    entity.getCollegeId(),
+                    entity.getSpecialtyId(),
+                    entity.getStatusId()
+            ));
 
-            setApplicationFieldsToStatement(ps, entity);
-
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    entity.setId(generatedKeys.getLong("id"));
-                }
-            }
+            return entity;
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-        return entity;
     }
 
     @Override
     public Application update(Application entity) throws DataAccessException {
         try {
             queryManager.update(
-                    queryManager.getQuery("applicant.update"),
-                    new Object[]{
-                            entity.isActive(),
-                            entity.isContract(),
-                            entity.getPriority(),
-                            entity.getCreated(),
-                            entity.getApplicantId(),
-                            entity.getCollegeId(),
-                            entity.getSpecialtyId(),
-                            entity.getStatusId()},
-                    entity.getId());
+                    queryManager.getQuery("application.update"),
+                    entity.isActive(),
+                    entity.isContract(),
+                    entity.getPriority(),
+                    entity.getCreated(),
+                    entity.getApplicantId(),
+                    entity.getCollegeId(),
+                    entity.getSpecialtyId(),
+                    entity.getStatusId(),
+                    entity.getId()
+            );
 
             return entity;
         } catch (SQLException e) {
@@ -196,7 +241,7 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
 //                        .build()
 
 
-//    private void setApplicationFieldsToStatement(PreparedStatement ps, Application application) throws SQLException {
+    //    private void setApplicationFieldsToStatement(PreparedStatement ps, Application application) throws SQLException {
 //        ps.setBoolean(1, application.isActive());
 //        ps.setBoolean(2, application.isContract());
 //        ps.setByte(3, application.getPriority());
@@ -207,7 +252,8 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
 //        ps.setLong(8, application.getStatusId());
 //    }
 //
-//    private Application processApplicationRow(ResultSet rs) throws SQLException {
+//    @Override
+//    public Application processRow(ResultSet rs) throws SQLException {
 //        return Application.builder()
 //                .id(rs.getLong("application.id"))
 //                .active(rs.getBoolean("application.active"))
@@ -219,5 +265,6 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
 //                .specialtyId(rs.getLong("application.specialty_id"))
 //                .statusId(rs.getLong("application.status_id"))
 //                .build();
+//
 //    }
 }

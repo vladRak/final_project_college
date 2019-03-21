@@ -5,11 +5,12 @@ import com.final_project_college.dto.EIEvaluation;
 import com.final_project_college.dto.ExamSubject;
 import com.final_project_college.dto.SchoolExam;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SchoolExamDAO extends GenericDAO<SchoolExam> {
 
-    Optional<ExamSubject> getExamSubjectBySchoolExamId(long schoolExamId);
-    Optional<EIEvaluation> getEIEvaluationBySchoolExamId(long schoolExamId);
-    Optional<Applicant> getApplicantBySchoolExamId(long schoolExamId);
+    List<SchoolExam> getEvaluationExams(long eIEvaluationId);
+
+    List<SchoolExam> getSchoolExamsByExamSubjectId(long examSubjectId);
 }

@@ -34,12 +34,12 @@ public class QueryManagerImpl implements QueryManager {
     public <T> List<T> select(final String sql, final RowMapper<T> rowMapper, final Object... parameters)
             throws SQLException {
 
-        final List<T> result = new ArrayList<T>();
+        final List<T> result;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             preparedStatementParameterSetter.setParameters(ps, parameters);
             try (ResultSet resultSet = ps.executeQuery()) {
-//                result = new ArrayList<T>();
+                result = new ArrayList<>();
                 while (resultSet.next()) {
                     result.add(rowMapper.map(resultSet));
                 }

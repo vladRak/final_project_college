@@ -23,11 +23,10 @@ public abstract class MySQLAbstractDAO {
                 connection);
     }
 
-    int getNumberOfRows(String queryName) throws SQLException {
+    int getNumberOfRows(final String sql) throws SQLException {
         int numOfRows = 0;
 
-        try (PreparedStatement ps = connection
-                .prepareStatement(queryManager.getQuery(queryName))) {
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
             try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
@@ -38,39 +37,10 @@ public abstract class MySQLAbstractDAO {
         return numOfRows;
     }
 
-//    ResultSet findAllPaginated(int start, int count, String queryName) throws SQLException {
-//
-//        try (PreparedStatement ps = connection
-//                .prepareStatement(queryManager.getQuery(queryName))) {
-//            ps.setInt(1, start);
-//            ps.setInt(2, count);
-//            return ps.executeQuery();
-//        }
-//    }
-//
-//    ResultSet findAll(String queryName) throws SQLException {
-//
-//        try (PreparedStatement ps = connection.prepareStatement(
-//                queryManager.getQuery(queryName))) {
-//            return ps.executeQuery();
-//        }
-//    }
-//
-//    ResultSet getEntityById(long id, String queryName) throws SQLException {
-//
-//        try (PreparedStatement ps = connection.prepareStatement(
-//                queryManager.getQuery(queryName))) {
-//            ps.setLong(1, id);
-//            return ps.executeQuery();
-//        }
-//
-//    }
-
-    boolean deleteById(long id, String queryName) throws SQLException {
+    boolean deleteById(long id, String sql) throws SQLException {
         boolean deleted = false;
 
-        try (PreparedStatement ps = connection.prepareStatement(
-                queryManager.getQuery(queryName))) {
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setLong(1, id);
             int i = ps.executeUpdate();

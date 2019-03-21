@@ -2,6 +2,7 @@ package com.final_project_college.dao;
 
 import com.final_project_college.exception.DataAccessException;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
