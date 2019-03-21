@@ -5,6 +5,7 @@ import com.final_project_college.dao.CollegeDAO;
 import com.final_project_college.dao.util.QueryManager;
 import com.final_project_college.dao.util.impl.QueryManagerImpl;
 import com.final_project_college.dto.*;
+import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,94 +13,72 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-public class MySQLCollegeDAO implements CollegeDAO {
+public class MySQLCollegeDAO extends MySQLAbstractDAO implements CollegeDAO {
 
-    private final QueryManager queryManager;
-    private final ConnectionWrapper connection;
     private static final Logger logger = LoggerFactory.getLogger(MySQLCollegeDAO.class);
 
     public MySQLCollegeDAO(ConnectionWrapper connection) {
-        this.connection = connection;
-        queryManager = new QueryManagerImpl();
+        super(connection);
     }
 
+    @Override
+    public int getNumberOfRows() throws DataAccessException {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("college.count"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 
     @Override
-    public College addSpecialtyToCollege(long specialtyId, long collegeId) {
+    public List<College> findAllPaginated(int start, int count) throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("college.findAllPaginated"),
+                    (rs) -> City.builder()
+                            .id(rs.getLong("id"))
+                            .cityName(rs.getString("city_name"))
+                            .regionId(rs.getLong("region_id"))
+                            .cityCoefficient(rs.getBigDecimal("city_coefficient"))
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<College> findAll() throws DataAccessException {
         return null;
     }
 
     @Override
-    public College removeSpecialtyFromCollege(long specialtyId, long collegeId) {
-        return null;
+    public Optional<College> getEntityById(long id) throws DataAccessException {
+        return Optional.empty();
     }
 
     @Override
-    public List<College> getCollegesByName(String collegeName) {
-        return null;
-    }
-
-    @Override
-    public List<Application> getApplicationsByCollegeId(long collegeId) {
-        return null;
-    }
-
-    @Override
-    public List<Specialty> getSpecialtiesByCollegeId(long collegeId) {
-        return null;
-    }
-
-    @Override
-    public List<Branch> getBranchesByCollegeId(long collegeId) {
-        return null;
-    }
-
-    @Override
-    public List<Applicant> getApplicantsByCollegeId(long collegeId) {
-        return null;
-    }
-
-    @Override
-    public int getNumberOfRows() {
-        return 0;
-    }
-
-    @Override
-    public List<College> findAllPaginated(int start, int count) {
-        return null;
-    }
-
-    @Override
-    public List<College> findAll() {
-        return null;
-    }
-
-    @Override
-    public College getEntityById(long id) {
-        return null;
-    }
-
-    @Override
-    public boolean deleteById(long id) {
+    public boolean deleteById(long id) throws DataAccessException {
         return false;
     }
 
     @Override
-    public College create(College entity) throws SQLException {
+    public College create(College entity) throws DataAccessException {
         return null;
     }
 
     @Override
-    public College update(College entity) {
+    public College update(College entity) throws DataAccessException {
         return null;
-    }
-
-    private void setCollegeFieldsToStatement(PreparedStatement ps,
-                                             College college) throws SQLException {
-        ps.setString(1, college.getName());
-        ps.setString(2, college.getDescription());
-        ps.setLong(3, college.getCityId());
     }
 
     private College processCollegeRow(ResultSet rs) throws SQLException {

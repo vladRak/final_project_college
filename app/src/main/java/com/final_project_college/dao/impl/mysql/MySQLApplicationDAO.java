@@ -25,18 +25,17 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
         try {
             return queryManager.select(
                     queryManager.getQuery("application.findApplicationsByApplicantId"),
-                    (rs) ->
-                            Application.builder()
-                                    .id(rs.getLong("id"))
-                                    .active(rs.getBoolean("active"))
-                                    .contract(rs.getBoolean("contract"))
-                                    .priority(rs.getByte("priority"))
-                                    .created(rs.getTimestamp("created"))
-                                    .applicantId(rs.getLong("applicant_id"))
-                                    .collegeId(rs.getLong("college_id"))
-                                    .specialtyId(rs.getLong("specialty_id"))
-                                    .statusId(rs.getLong("status_id"))
-                                    .build(),
+                    (rs) -> Application.builder()
+                            .id(rs.getLong("id"))
+                            .active(rs.getBoolean("active"))
+                            .contract(rs.getBoolean("contract"))
+                            .priority(rs.getByte("priority"))
+                            .created(rs.getTimestamp("created"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .collegeId(rs.getLong("college_id"))
+                            .specialtyId(rs.getLong("specialty_id"))
+                            .statusId(rs.getLong("status_id"))
+                            .build(),
                     applicantId
             );
         } catch (SQLException e) {
@@ -44,21 +43,6 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-    }
-
-    @Override
-    public List<Application> getApplicationsByCollegeId(long collegeId) {
-        return null;
-    }
-
-    @Override
-    public List<Application> getApplicationsBySpecialtyId(long specialtyId) {
-        return null;
-    }
-
-    @Override
-    public List<Application> getApplicationsByStatusId(long statusId) {
-        return null;
     }
 
     @Override
@@ -81,18 +65,17 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
         try {
             return queryManager.select(
                     queryManager.getQuery("applicant.findAllPaginated"),
-                    (rs) ->
-                            Application.builder()
-                                    .id(rs.getLong("id"))
-                                    .active(rs.getBoolean("active"))
-                                    .contract(rs.getBoolean("contract"))
-                                    .priority(rs.getByte("priority"))
-                                    .created(rs.getTimestamp("created"))
-                                    .applicantId(rs.getLong("applicant_id"))
-                                    .collegeId(rs.getLong("college_id"))
-                                    .specialtyId(rs.getLong("specialty_id"))
-                                    .statusId(rs.getLong("status_id"))
-                                    .build(),
+                    (rs) -> Application.builder()
+                            .id(rs.getLong("id"))
+                            .active(rs.getBoolean("active"))
+                            .contract(rs.getBoolean("contract"))
+                            .priority(rs.getByte("priority"))
+                            .created(rs.getTimestamp("created"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .collegeId(rs.getLong("college_id"))
+                            .specialtyId(rs.getLong("specialty_id"))
+                            .statusId(rs.getLong("status_id"))
+                            .build(),
                     start,
                     count
             );
@@ -108,18 +91,17 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
         try {
             return queryManager.select(
                     queryManager.getQuery("applicant.findAll"),
-                    (rs) ->
-                            Application.builder()
-                                    .id(rs.getLong("id"))
-                                    .active(rs.getBoolean("active"))
-                                    .contract(rs.getBoolean("contract"))
-                                    .priority(rs.getByte("priority"))
-                                    .created(rs.getTimestamp("created"))
-                                    .applicantId(rs.getLong("applicant_id"))
-                                    .collegeId(rs.getLong("college_id"))
-                                    .specialtyId(rs.getLong("specialty_id"))
-                                    .statusId(rs.getLong("status_id"))
-                                    .build());
+                    (rs) -> Application.builder()
+                            .id(rs.getLong("id"))
+                            .active(rs.getBoolean("active"))
+                            .contract(rs.getBoolean("contract"))
+                            .priority(rs.getByte("priority"))
+                            .created(rs.getTimestamp("created"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .collegeId(rs.getLong("college_id"))
+                            .specialtyId(rs.getLong("specialty_id"))
+                            .statusId(rs.getLong("status_id"))
+                            .build());
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -211,60 +193,4 @@ public class MySQLApplicationDAO extends MySQLAbstractDAO implements Application
             throw new DataAccessException(e.getMessage());
         }
     }
-
-//        try (PreparedStatement ps = connection.prepareStatement(
-//                queryManager.getQuery("applicant.update"))) {
-//
-//            setApplicationFieldsToStatement(ps, entity);
-//            ps.setLong(10, entity.getId());
-//
-//            if (ps.executeUpdate() == 0) throw new SQLException();
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            logger.error(e.getMessage());
-//            throw new DataAccessException(e.getMessage());
-//        }
-//        return entity;
-
-//        (resultSet) ->
-//                Application.builder()
-//                        .id(resultSet.getLong("application.id"))
-//                        .active(resultSet.getBoolean("application.active"))
-//                        .contract(resultSet.getBoolean("application.contract"))
-//                        .priority(resultSet.getByte("application.priority"))
-//                        .created(resultSet.getTimestamp("application.created"))
-//                        .applicantId(resultSet.getLong("application.applicant_id"))
-//                        .collegeId(resultSet.getLong("application.college_id"))
-//                        .specialtyId(resultSet.getLong("application.specialty_id"))
-//                        .statusId(resultSet.getLong("application.status_id"))
-//                        .build()
-
-
-    //    private void setApplicationFieldsToStatement(PreparedStatement ps, Application application) throws SQLException {
-//        ps.setBoolean(1, application.isActive());
-//        ps.setBoolean(2, application.isContract());
-//        ps.setByte(3, application.getPriority());
-//        ps.setTimestamp(4, application.getCreated());
-//        ps.setLong(5, application.getApplicantId());
-//        ps.setLong(6, application.getCollegeId());
-//        ps.setLong(7, application.getSpecialtyId());
-//        ps.setLong(8, application.getStatusId());
-//    }
-//
-//    @Override
-//    public Application processRow(ResultSet rs) throws SQLException {
-//        return Application.builder()
-//                .id(rs.getLong("application.id"))
-//                .active(rs.getBoolean("application.active"))
-//                .contract(rs.getBoolean("application.contract"))
-//                .priority(rs.getByte("application.priority"))
-//                .created(rs.getTimestamp("application.created"))
-//                .applicantId(rs.getLong("application.applicant_id"))
-//                .collegeId(rs.getLong("application.college_id"))
-//                .specialtyId(rs.getLong("application.specialty_id"))
-//                .statusId(rs.getLong("application.status_id"))
-//                .build();
-//
-//    }
 }

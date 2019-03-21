@@ -6,6 +6,7 @@ import com.final_project_college.dao.util.QueryManager;
 import com.final_project_college.dao.util.impl.QueryManagerImpl;
 import com.final_project_college.dto.City;
 import com.final_project_college.dto.College;
+import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,74 +14,132 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-public class MySQLCityDAO implements CityDAO {
+public class MySQLCityDAO extends MySQLAbstractDAO implements CityDAO {
 
-    private final QueryManager queryManager;
-    private final ConnectionWrapper connection;
     private static final Logger logger = LoggerFactory.getLogger(MySQLCityDAO.class);
 
     public MySQLCityDAO(ConnectionWrapper connection) {
-        this.connection = connection;
-        queryManager = new QueryManagerImpl();
+       super(connection);
     }
 
     @Override
-    public List<College> getCollegesByCityId(long cityId) {
-        return null;
+    public int getNumberOfRows() throws DataAccessException {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("city.count"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public int getNumberOfRows() {
-        return 0;
+    public List<City> findAllPaginated(int start, int count) throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("city.findAllPaginated"),
+                    (rs) -> City.builder()
+                            .id(rs.getLong("id"))
+                            .cityName(rs.getString("city_name"))
+                            .regionId(rs.getLong("region_id"))
+                            .cityCoefficient(rs.getBigDecimal("city_coefficient"))
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public List<City> findAllPaginated(int start, int count) {
-        return null;
+    public List<City> findAll() throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("city.findAll"),
+                    (rs) -> City.builder()
+                            .id(rs.getLong("id"))
+                            .cityName(rs.getString("city_name"))
+                            .regionId(rs.getLong("region_id"))
+                            .cityCoefficient(rs.getBigDecimal("city_coefficient"))
+                            .build());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public List<City> findAll() {
-        return null;
+    public Optional<City> getEntityById(long id) throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("city.findById"),
+                    (rs) -> City.builder()
+                            .id(rs.getLong("id"))
+                            .cityName(rs.getString("city_name"))
+                            .regionId(rs.getLong("region_id"))
+                            .cityCoefficient(rs.getBigDecimal("city_coefficient"))
+                            .build(),
+                    id).stream().findFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public City getEntityById(long id) {
-        return null;
+    public boolean deleteById(long id) throws DataAccessException {
+        try {
+            return deleteById(id, queryManager
+                    .getQuery("city.deleteById"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public boolean deleteById(long id) {
-        return false;
+    public City create(City entity) throws DataAccessException {
+        try {
+            entity.setId(queryManager.insertAndGetId(
+                    queryManager.getQuery("city.create"),
+                    entity.getCityName(),
+                    entity.getRegionId(),
+                    entity.getCoefficient()
+            ));
+
+            return entity;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public City create(City entity) throws SQLException {
-        return null;
-    }
+    public City update(City entity) throws DataAccessException {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("city.update"),
+                    entity.getCityName(),
+                    entity.getRegionId(),
+                    entity.getCoefficient(),
+                    entity.getId()
+            );
 
-    @Override
-    public City update(City entity) {
-        return null;
-    }
-
-    private void setCityFieldsToStatement(PreparedStatement ps,
-                                          City city) throws SQLException {
-        ps.setString(1, city.getCityName());
-        ps.setLong(2, city.getRegionId());
-
-    }
-
-    private City processCityRow(ResultSet rs) throws SQLException {
-        long id = rs.getLong("city.id");
-        String cityName = rs.getString("city.city_name");
-        long regionId = rs.getLong("certificate.region_id");
-
-        return City.builder()
-                .id(id)
-                .cityName(cityName)
-                .regionId(regionId)
-                .build();
+            return entity;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 }

@@ -2,95 +2,139 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.connection.ConnectionWrapper;
 import com.final_project_college.dao.BranchDAO;
-import com.final_project_college.dao.util.QueryManager;
-import com.final_project_college.dao.util.impl.QueryManagerImpl;
 import com.final_project_college.dto.Branch;
-import com.final_project_college.dto.College;
-import com.final_project_college.dto.Specialty;
+import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-public class MySQLBranchDAO implements BranchDAO {
+public class MySQLBranchDAO extends MySQLAbstractDAO implements BranchDAO {
 
-    private final QueryManager queryManager;
-    private final ConnectionWrapper connection;
     private static final Logger logger = LoggerFactory.getLogger(MySQLBranchDAO.class);
 
     public MySQLBranchDAO(ConnectionWrapper connection) {
-        this.connection = connection;
-        queryManager = new QueryManagerImpl();
+        super(connection);
     }
 
     @Override
-    public List<Specialty> getSpecialtiesByBranchId(long branchId) {
-        return null;
+    public int getNumberOfRows() throws DataAccessException {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("branch.count"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public List<College> getCollegesByBranchId(long branchId) {
-        return null;
+    public List<Branch> findAllPaginated(int start, int count) throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("branch.findAllPaginated"),
+                    (rs) -> Branch.builder()
+                            .id(rs.getLong("id"))
+                            .branchCode(rs.getShort("branch_code"))
+                            .branchName(rs.getString("branch_name"))
+                            .branchCoefficient(rs.getBigDecimal("branch_coefficient"))
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public int getNumberOfRows() {
-        return 0;
+    public List<Branch> findAll() throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("branch.findAll"),
+                    (rs) -> Branch.builder()
+                            .id(rs.getLong("id"))
+                            .branchCode(rs.getShort("branch_code"))
+                            .branchName(rs.getString("branch_name"))
+                            .branchCoefficient(rs.getBigDecimal("branch_coefficient"))
+                            .build());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public List<Branch> findAllPaginated(int start, int count) {
-        return null;
+    public Optional<Branch> getEntityById(long id) throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("branch.findById"),
+                    (rs) -> Branch.builder()
+                            .id(rs.getLong("id"))
+                            .branchCode(rs.getShort("branch_code"))
+                            .branchName(rs.getString("branch_name"))
+                            .branchCoefficient(rs.getBigDecimal("branch_coefficient"))
+                            .build(),
+                    id).stream().findFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public List<Branch> findAll() {
-        return null;
+    public boolean deleteById(long id) throws DataAccessException {
+        try {
+            return deleteById(id, queryManager
+                    .getQuery("branch.deleteById"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public Branch getEntityById(long id) {
-        return null;
+    public Branch create(Branch entity) throws DataAccessException {
+        try {
+            entity.setId(queryManager.insertAndGetId(
+                    queryManager.getQuery("branch.create"),
+                    entity.getBranchCode(),
+                    entity.getBranchName(),
+                    entity.getCoefficient()
+            ));
+
+            return entity;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public boolean deleteById(long id) {
-        return false;
-    }
+    public Branch update(Branch entity) throws DataAccessException {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("branch.update"),
+                    entity.getBranchCode(),
+                    entity.getBranchName(),
+                    entity.getCoefficient(),
+                    entity.getId()
+            );
 
-    @Override
-    public Branch create(Branch entity) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public Branch update(Branch entity) {
-        return null;
-    }
-
-    private void setBranchFieldsToStatement(PreparedStatement ps,
-                                            Branch branch) throws SQLException {
-        ps.setInt(1, branch.getBranchCode());
-        ps.setString(2, branch.getBranchName());
-        ps.setBigDecimal(3, branch.getCoefficient());
-
-    }
-
-    private Branch processBranchRow(ResultSet rs) throws SQLException {
-        long id = rs.getLong("branch.id");
-        short branchCode = rs.getShort("branch.branch_code");
-        String branchName = rs.getString("branch.branch_name");
-        BigDecimal branchCoefficient = rs.getBigDecimal("branch.branch_coefficient");
-
-        return Branch.builder()
-                .id(id)
-                .branchCode(branchCode)
-                .branchName(branchName)
-                .branchCoefficient(branchCoefficient)
-                .build();
+            return entity;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 }

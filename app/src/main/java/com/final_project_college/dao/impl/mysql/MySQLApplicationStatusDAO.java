@@ -6,6 +6,7 @@ import com.final_project_college.dao.util.QueryManager;
 import com.final_project_college.dao.util.impl.QueryManagerImpl;
 import com.final_project_college.dto.Application;
 import com.final_project_college.dto.ApplicationStatus;
+import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,71 +14,122 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-public class MySQLApplicationStatusDAO implements ApplicationStatusDAO {
+public class MySQLApplicationStatusDAO extends MySQLAbstractDAO implements ApplicationStatusDAO {
 
-    private final QueryManager queryManager;
-    private final ConnectionWrapper connection;
     private static final Logger logger = LoggerFactory.getLogger(MySQLApplicationStatusDAO.class);
 
     public MySQLApplicationStatusDAO(ConnectionWrapper connection) {
-        this.connection = connection;
-        queryManager = new QueryManagerImpl();
+        super(connection);
     }
 
     @Override
-    public List<Application> getApplicationsByStatusId(long statusId) {
-        return null;
+    public int getNumberOfRows() throws DataAccessException {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("application_status.count"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public int getNumberOfRows() {
-        return 0;
+    public List<ApplicationStatus> findAllPaginated(int start, int count) throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("application_status.findAllPaginated"),
+                    (rs) -> ApplicationStatus.builder()
+                            .id(rs.getLong("id"))
+                            .statusName("status_name")
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public List<ApplicationStatus> findAllPaginated(int start, int count) {
-        return null;
+    public List<ApplicationStatus> findAll() throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("application_status.findAll"),
+                    (rs) -> ApplicationStatus.builder()
+                            .id(rs.getLong("id"))
+                            .statusName("status_name")
+                            .build());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public List<ApplicationStatus> findAll() {
-        return null;
+    public Optional<ApplicationStatus> getEntityById(long id) throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("application_status.findById"),
+                    (rs) -> ApplicationStatus.builder()
+                            .id(rs.getLong("id"))
+                            .statusName("status_name")
+                            .build(),
+                    id).stream().findFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public ApplicationStatus getEntityById(long id) {
-        return null;
+    public boolean deleteById(long id) throws DataAccessException {
+        try {
+            return deleteById(id, queryManager
+                    .getQuery("application_status.deleteById"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public boolean deleteById(long id) {
-        return false;
+    public ApplicationStatus create(ApplicationStatus entity) throws DataAccessException {
+        try {
+            entity.setId(queryManager.insertAndGetId(
+                    queryManager.getQuery("application_status.create"),
+                    entity.getStatusName()
+            ));
+
+            return entity;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public ApplicationStatus create(ApplicationStatus entity) throws SQLException {
-        return null;
-    }
+    public ApplicationStatus update(ApplicationStatus entity) throws DataAccessException {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("application_status.update"),
+                    entity.getStatusName(),
+                    entity.getId()
+            );
 
-    @Override
-    public ApplicationStatus update(ApplicationStatus entity) {
-        return null;
-    }
-
-    private void setApplicationStatusFieldsToStatement(PreparedStatement ps,
-                                                       ApplicationStatus applicationStatus
-    ) throws SQLException {
-        ps.setString(1, applicationStatus.getStatusName());
-    }
-
-    private ApplicationStatus processApplicationStatusRow(ResultSet rs) throws SQLException {
-        long id = rs.getLong("application_status.id");
-        String statusName = rs.getString("application_status.status_name");
-
-        return ApplicationStatus.builder()
-                .id(id)
-                .statusName(statusName)
-                .build();
+            return entity;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 }

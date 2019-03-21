@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,167 +46,154 @@ public class MySQLApplicantDAO extends MySQLAbstractDAO implements ApplicantDAO 
 
     @Override
     public int getNumberOfRows() throws DataAccessException {
-        int numOfRows = 0;
+        try {
 
-        try (PreparedStatement ps = connection
-                .prepareStatement(queryManager.getQuery("applicant.count"))) {
+            return getNumberOfRows(queryManager
+                    .getQuery("applicant.count"));
 
-            try (ResultSet resultSet = ps.executeQuery()) {
-                while (resultSet.next()) {
-                    numOfRows = resultSet.getInt(1);
-                }
-            }
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-
-        return numOfRows;
     }
 
     @Override
     public List<Applicant> findAllPaginated(int start, int count) throws DataAccessException {
-        List<Applicant> list;
-
-        try (PreparedStatement ps = connection
-                .prepareStatement(queryManager.getQuery("applicant.findAllPaginated"))) {
-            ps.setInt(1, start);
-            ps.setInt(2, count);
-            try (ResultSet resultSet = ps.executeQuery()) {
-                list = new ArrayList<>();
-                while (resultSet.next()) {
-                    list.add(processApplicantRow(resultSet));
-                }
-            }
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findAllPaginated"),
+                    (rs) -> Applicant.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .valid(rs.getBoolean("valid"))
+                            .photo(rs.getBytes("photo"))
+                            .phoneNumber(rs.getString("phone_number"))
+                            .userId(rs.getLong("user_id"))
+                            .eIEvaluationId(rs.getLong("e_i_evaluation_id"))
+                            .certificateId(rs.getLong("certificate_id"))
+                            .exemptionId(rs.getLong("exemption_id"))
+                            .build(),
+                    start,
+                    count
+            );
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-        return list;
     }
 
     @Override
     public List<Applicant> findAll() throws DataAccessException {
-        List<Applicant> list;
-
-        try (PreparedStatement ps = connection.prepareStatement(
-                queryManager.getQuery("applicant.findAll"))) {
-            try (ResultSet resultSet = ps.executeQuery()) {
-                list = new ArrayList<>();
-                while (resultSet.next()) {
-                    list.add(processApplicantRow(resultSet));
-                }
-            }
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findAll"),
+                    (rs) -> Applicant.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .valid(rs.getBoolean("valid"))
+                            .photo(rs.getBytes("photo"))
+                            .phoneNumber(rs.getString("phone_number"))
+                            .userId(rs.getLong("user_id"))
+                            .eIEvaluationId(rs.getLong("e_i_evaluation_id"))
+                            .certificateId(rs.getLong("certificate_id"))
+                            .exemptionId(rs.getLong("exemption_id"))
+                            .build();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-        return list;
     }
 
     @Override
     public Optional<Applicant> getEntityById(long id) throws DataAccessException {
-        Optional<Applicant> optional = Optional.empty();
-
-        try (PreparedStatement ps = connection.prepareStatement(
-                queryManager.getQuery("applicant.findById"))) {
-
-            ps.setLong(1, id);
-            try (ResultSet resultSet = ps.executeQuery()) {
-                while (resultSet.next()) {
-                    optional = Optional.ofNullable(processApplicantRow(resultSet));
-                }
-            }
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findById"),
+                    (rs) -> Applicant.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .valid(rs.getBoolean("valid"))
+                            .photo(rs.getBytes("photo"))
+                            .phoneNumber(rs.getString("phone_number"))
+                            .userId(rs.getLong("user_id"))
+                            .eIEvaluationId(rs.getLong("e_i_evaluation_id"))
+                            .certificateId(rs.getLong("certificate_id"))
+                            .exemptionId(rs.getLong("exemption_id"))
+                            .build(),
+                    id).stream().findFirst();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-        return optional;
     }
 
     @Override
     public boolean deleteById(long id) throws DataAccessException {
-        boolean deleted = false;
+        try {
 
-        try (PreparedStatement ps = connection.prepareStatement(
-                queryManager.getQuery("applicant.deleteById"))) {
+            return deleteById(id, queryManager
+                    .getQuery("applicant.deleteById"));
 
-            ps.setLong(1, id);
-            int i = ps.executeUpdate();
-            if (i > 0) deleted = true;
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-        return deleted;
     }
 
     @Override
     public Applicant create(Applicant entity) throws DataAccessException {
-        try (PreparedStatement ps = connection.prepareStatement(
-                queryManager.getQuery("applicant.create"),
-                Statement.RETURN_GENERATED_KEYS)) {
+        try {
+            entity.setId(queryManager.insertAndGetId(
+                    queryManager.getQuery("applicant.create"),
+                    entity.getFirstName(),
+                    entity.getLastName(),
+                    entity.isValid(),
+                    entity.getPhoto(),
+                    entity.getPhoneNumber(),
+                    entity.getUserId(),
+                    entity.getEIEvaluationId(),
+                    entity.getCertificateId(),
+                    entity.getExemptionId()
+            ));
 
-            setApplicantFieldsToStatement(ps, entity);
-
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    entity.setId(generatedKeys.getLong("id"));
-                }
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
-        }
-        return entity;
-    }
-
-    @Override
-    public Applicant update(Applicant entity) throws DataAccessException {
-        try (PreparedStatement ps = connection.prepareStatement(
-                queryManager.getQuery("applicant.update"))) {
-
-            setApplicantFieldsToStatement(ps, entity);
-            ps.setLong(10, entity.getId());
-
-            if (ps.executeUpdate() == 0) throw new SQLException();
-
+            return entity;
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
-        return entity;
     }
 
-    private void setApplicantFieldsToStatement(PreparedStatement ps, Applicant applicant) throws SQLException {
-        ps.setString(1, applicant.getFirstName());
-        ps.setString(2, applicant.getLastName());
-        ps.setBoolean(3, applicant.isValid());
-        ps.setBytes(4, applicant.getPhoto());
-        ps.setString(5, applicant.getPhoneNumber());
-        ps.setLong(6, applicant.getUserId());
-        ps.setLong(7, applicant.getEIEvaluationId());
-        ps.setLong(8, applicant.getCertificateId());
-        ps.setLong(9, applicant.getExemptionId());
-    }
+    @Override
+    public Applicant update(Applicant entity) throws DataAccessException {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("applicant.update"),
+                    entity.getFirstName(),
+                    entity.getLastName(),
+                    entity.isValid(),
+                    entity.getPhoto(),
+                    entity.getPhoneNumber(),
+                    entity.getUserId(),
+                    entity.getEIEvaluationId(),
+                    entity.getCertificateId(),
+                    entity.getExemptionId(),
+                    entity.getId()
+            );
 
-    private Applicant processApplicantRow(ResultSet rs) throws SQLException {
-        return Applicant.builder()
-                .id(rs.getLong("applicant.id"))
-                .firstName(rs.getString("applicant.first_name"))
-                .lastName(rs.getString("applicant.last_name"))
-                .valid(rs.getBoolean("applicant.valid"))
-                .photo(rs.getBytes("applicant.photo"))
-                .phoneNumber(rs.getString("applicant.phone_number"))
-                .userId(rs.getLong("applicant.user_id"))
-                .eIEvaluationId(rs.getLong("applicant.e_i_evaluation_id"))
-                .certificateId(rs.getLong("applicant.certificate_id"))
-                .exemptionId(rs.getLong("applicant.exemption_id"))
-                .build();
+            return entity;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 }

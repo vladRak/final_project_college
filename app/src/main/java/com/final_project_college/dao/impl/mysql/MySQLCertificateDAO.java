@@ -2,96 +2,144 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.connection.ConnectionWrapper;
 import com.final_project_college.dao.CertificateDAO;
-import com.final_project_college.dao.util.QueryManager;
-import com.final_project_college.dao.util.impl.QueryManagerImpl;
-import com.final_project_college.dto.Applicant;
 import com.final_project_college.dto.Certificate;
+import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-public class MySQLCertificateDAO implements CertificateDAO {
+public class MySQLCertificateDAO extends MySQLAbstractDAO implements CertificateDAO {
 
-    private final QueryManager queryManager;
-    private final ConnectionWrapper connection;
     private static final Logger logger = LoggerFactory.getLogger(MySQLCertificateDAO.class);
 
     public MySQLCertificateDAO(ConnectionWrapper connection) {
-        this.connection = connection;
-        queryManager = new QueryManagerImpl();
+        super(connection);
     }
 
     @Override
-    public List<Applicant> getApplicantsByRating() {
-        return null;
+    public int getNumberOfRows() throws DataAccessException {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("certificate.count"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public List<Applicant> getApplicantsWithConcreteRating(BigDecimal rating) {
-        return null;
+    public List<Certificate> findAllPaginated(int start, int count) throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("certificate.findAllPaginated"),
+                    (rs) -> Certificate.builder()
+                            .id(rs.getLong("id"))
+                            .series(rs.getString("series"))
+                            .serialNumber(rs.getInt("serial_number"))
+                            .rating(rs.getBigDecimal("rating"))
+                            .scan(rs.getBytes("scan"))
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public int getNumberOfRows() {
-        return 0;
+    public List<Certificate> findAll() throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("certificate.findAll"),
+                    (rs) -> Certificate.builder()
+                            .id(rs.getLong("id"))
+                            .series(rs.getString("series"))
+                            .serialNumber(rs.getInt("serial_number"))
+                            .rating(rs.getBigDecimal("rating"))
+                            .scan(rs.getBytes("scan"))
+                            .build());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public List<Certificate> findAllPaginated(int start, int count) {
-        return null;
+    public Optional<Certificate> getEntityById(long id) throws DataAccessException {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("certificate.findById"),
+                    (rs) -> Certificate.builder()
+                            .id(rs.getLong("id"))
+                            .series(rs.getString("series"))
+                            .serialNumber(rs.getInt("serial_number"))
+                            .rating(rs.getBigDecimal("rating"))
+                            .scan(rs.getBytes("scan"))
+                            .build(),
+                    id).stream().findFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public List<Certificate> findAll() {
-        return null;
+    public boolean deleteById(long id) throws DataAccessException {
+        try {
+            return deleteById(id, queryManager
+                    .getQuery("certificate.deleteById"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public Certificate getEntityById(long id) {
-        return null;
+    public Certificate create(Certificate entity) throws DataAccessException {
+        try {
+            entity.setId(queryManager.insertAndGetId(
+                    queryManager.getQuery("certificate.create"),
+                    entity.getSeries(),
+                    entity.getSerialNumber(),
+                    entity.getRating(),
+                    entity.getScan()
+            ));
+
+            return entity;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public boolean deleteById(long id) {
-        return false;
-    }
+    public Certificate update(Certificate entity) throws DataAccessException {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("certificate.update"),
+                    entity.getSeries(),
+                    entity.getSerialNumber(),
+                    entity.getRating(),
+                    entity.getScan(),
+                    entity.getId()
+            );
 
-    @Override
-    public Certificate create(Certificate entity) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public Certificate update(Certificate entity) {
-        return null;
-    }
-
-    private void setCertificateFieldsToStatement(PreparedStatement ps,
-                                                 Certificate certificate) throws SQLException {
-        ps.setString(1, certificate.getSeries());
-        ps.setInt(2, certificate.getSerialNumber());
-        ps.setBigDecimal(3, certificate.getRating());
-        ps.setBytes(4, certificate.getScan());
-    }
-
-    private Certificate processCertificateRow(ResultSet rs) throws SQLException {
-        long id = rs.getLong("certificate.id");
-        String series = rs.getString("certificate.series");
-        int serialNumber = rs.getInt("certificate.serial_number");
-        BigDecimal rating = rs.getBigDecimal("certificate.rating");
-        byte[] scan = rs.getBytes("certificate.scan");
-
-        return Certificate.builder()
-                .id(id)
-                .series(series)
-                .serialNumber(serialNumber)
-                .rating(rating)
-                .scan(scan)
-                .build();
+            return entity;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+        }
     }
 }
