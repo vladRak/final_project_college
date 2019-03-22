@@ -1,14 +1,13 @@
-package com.final_project_college.persistence.dto;
+package com.final_project_college.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.io.Serializable;
 
-@Getter
-@ToString
-@EqualsAndHashCode
+//@Getter
+//@ToString
+//@EqualsAndHashCode
+@Data
 public abstract class Entity implements Serializable {
     private long id;
 

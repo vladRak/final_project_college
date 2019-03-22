@@ -1,6 +1,6 @@
 package com.final_project_college.dao;
 
-import com.final_project_college.persistence.dto.Role;
+import com.final_project_college.dto.Role;
 
 import java.util.List;
 import java.util.Optional;

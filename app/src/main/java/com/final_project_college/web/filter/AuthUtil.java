@@ -1,8 +1,8 @@
 package com.final_project_college.web.filter;
 
 import com.final_project_college.dao.AbstractDaoFactory;
-import com.final_project_college.persistence.dto.Role;
-import com.final_project_college.persistence.dto.User;
+import com.final_project_college.dto.Role;
+import com.final_project_college.dto.User;
 import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.exception.VerificationException;
 import com.final_project_college.service.RoleService;

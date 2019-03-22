@@ -1,4 +1,4 @@
-package com.final_project_college.persistence.dto;
+package com.final_project_college.dto;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

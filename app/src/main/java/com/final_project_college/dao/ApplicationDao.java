@@ -1,6 +1,6 @@
 package com.final_project_college.dao;
 
-import com.final_project_college.persistence.dto.Application;
+import com.final_project_college.dto.Application;
 import com.final_project_college.exception.DataAccessException;
 
 import java.util.List;

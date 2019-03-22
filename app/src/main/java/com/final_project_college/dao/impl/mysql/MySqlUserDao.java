@@ -2,7 +2,7 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.UserDao;
-import com.final_project_college.persistence.dto.User;
+import com.final_project_college.dto.User;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

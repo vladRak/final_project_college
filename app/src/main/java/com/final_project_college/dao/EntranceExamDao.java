@@ -1,6 +1,6 @@
 package com.final_project_college.dao;
 
-import com.final_project_college.persistence.dto.EntranceExam;
+import com.final_project_college.dto.EntranceExam;
 
 import java.util.List;
 

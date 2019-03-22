@@ -5,7 +5,7 @@ import com.final_project_college.dao.AbstractDaoFactory;
 import com.final_project_college.dao.jdbc.impl.DefaultTransactionManager;
 import com.final_project_college.dao.old.ExpositionDao;
 import com.final_project_college.dao.impl.mysql.MySqlDaoFactory;
-import com.final_project_college.persistence.dto.old.Exposition;
+import com.final_project_college.dto.old.Exposition;
 import com.final_project_college.service.ExpositionService;
 import com.final_project_college.util.ContextMapper;
 import org.junit.Test;
