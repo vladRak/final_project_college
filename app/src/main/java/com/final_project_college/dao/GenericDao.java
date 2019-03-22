@@ -1,25 +1,23 @@
 package com.final_project_college.dao;
 
-import com.final_project_college.exception.DataAccessException;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 public interface GenericDao<T> {
 
-    int getNumberOfRows() throws DataAccessException;
+    int numberOfRows();
 
-    List<T> findAllPaginated(int start, int count) throws DataAccessException;
+    List<T> getAllPaginated(int start, int count);
 
-    List<T> findAll() throws DataAccessException;
+    List<T> getAll();
 
-    Optional<T> getEntityById(long id) throws DataAccessException;
+    Optional<T> get(long id);
 
-    boolean deleteById(long id) throws DataAccessException;
+    boolean delete(long id);
 
-    T create(T entity) throws DataAccessException;
+    boolean delete(T entity);
 
-    T update(T entity) throws DataAccessException;
+    T save(T entity);
+
+    T update(T entity);
 }

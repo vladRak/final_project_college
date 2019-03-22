@@ -2,7 +2,7 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.PrivilegeDao;
-import com.final_project_college.dto.Privilege;
+import com.final_project_college.domain.dto.Privilege;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class MySqlPrivilegeDao extends MySqlAbstractDao implements PrivilegeDao 
     }
 
     @Override
-    public int getNumberOfRows() throws DataAccessException {
+    public int numberOfRows() {
         try {
             return getNumberOfRows(queryManager
                     .getQuery("privilege.count"));
@@ -58,7 +58,7 @@ public class MySqlPrivilegeDao extends MySqlAbstractDao implements PrivilegeDao 
     }
 
     @Override
-    public List<Privilege> findAllPaginated(int start, int count) throws DataAccessException {
+    public List<Privilege> getAllPaginated(int start, int count) {
         try {
             return queryManager.select(
                     queryManager.getQuery("privilege.findAllPaginated"),
@@ -77,7 +77,7 @@ public class MySqlPrivilegeDao extends MySqlAbstractDao implements PrivilegeDao 
     }
 
     @Override
-    public List<Privilege> findAll() throws DataAccessException {
+    public List<Privilege> getAll() {
         try {
             return queryManager.select(
                     queryManager.getQuery("privilege.findAll"),
@@ -93,7 +93,7 @@ public class MySqlPrivilegeDao extends MySqlAbstractDao implements PrivilegeDao 
     }
 
     @Override
-    public Optional<Privilege> getEntityById(long id) throws DataAccessException {
+    public Optional<Privilege> get(long id) {
         try {
             return queryManager.select(
                     queryManager.getQuery("privilege.findById"),
@@ -110,7 +110,7 @@ public class MySqlPrivilegeDao extends MySqlAbstractDao implements PrivilegeDao 
     }
 
     @Override
-    public boolean deleteById(long id) throws DataAccessException {
+    public boolean delete(long id) {
         try {
 
             return deleteById(id, queryManager
@@ -124,14 +124,18 @@ public class MySqlPrivilegeDao extends MySqlAbstractDao implements PrivilegeDao 
     }
 
     @Override
-    public Privilege create(Privilege entity) throws DataAccessException {
-        try {
-            entity.setId(queryManager.insertAndGetId(
-                    queryManager.getQuery("privilege.create"),
-                    entity.getPrivilegeName()
-            ));
+    public boolean delete(Privilege entity) {
+        return delete(entity.getId());
+    }
 
-            return entity;
+    @Override
+    public Privilege save(Privilege entity) {
+        try {
+            return Privilege.builder()
+                    .id(queryManager.insertAndGetId(
+                            queryManager.getQuery("privilege.create")))
+                    .privilegeName(entity.getPrivilegeName())
+                    .build();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -140,7 +144,7 @@ public class MySqlPrivilegeDao extends MySqlAbstractDao implements PrivilegeDao 
     }
 
     @Override
-    public Privilege update(Privilege entity) throws DataAccessException {
+    public Privilege update(Privilege entity) {
         try {
             queryManager.update(
                     queryManager.getQuery("privilege.update"),

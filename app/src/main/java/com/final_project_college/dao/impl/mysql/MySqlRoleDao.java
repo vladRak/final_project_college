@@ -2,7 +2,7 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.RoleDao;
-import com.final_project_college.dto.Role;
+import com.final_project_college.domain.dto.Role;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class MySqlRoleDao extends MySqlAbstractDao implements RoleDao {
     }
 
     @Override
-    public int getNumberOfRows() throws DataAccessException {
+    public int numberOfRows() {
         try {
             return getNumberOfRows(queryManager
                     .getQuery("role.count"));
@@ -57,7 +57,7 @@ public class MySqlRoleDao extends MySqlAbstractDao implements RoleDao {
     }
 
     @Override
-    public List<Role> findAllPaginated(int start, int count) throws DataAccessException {
+    public List<Role> getAllPaginated(int start, int count) {
         try {
             return queryManager.select(
                     queryManager.getQuery("role.findAllPaginated"),
@@ -76,7 +76,7 @@ public class MySqlRoleDao extends MySqlAbstractDao implements RoleDao {
     }
 
     @Override
-    public List<Role> findAll() throws DataAccessException {
+    public List<Role> getAll() {
         try {
             return queryManager.select(
                     queryManager.getQuery("role.findAll"),
@@ -92,7 +92,7 @@ public class MySqlRoleDao extends MySqlAbstractDao implements RoleDao {
     }
 
     @Override
-    public Optional<Role> getEntityById(long id) throws DataAccessException {
+    public Optional<Role> get(long id) {
         try {
             return queryManager.select(
                     queryManager.getQuery("role.findById"),
@@ -109,7 +109,7 @@ public class MySqlRoleDao extends MySqlAbstractDao implements RoleDao {
     }
 
     @Override
-    public boolean deleteById(long id) throws DataAccessException {
+    public boolean delete(long id) {
         try {
 
             return deleteById(id, queryManager
@@ -123,14 +123,18 @@ public class MySqlRoleDao extends MySqlAbstractDao implements RoleDao {
     }
 
     @Override
-    public Role create(Role entity) throws DataAccessException {
-        try {
-            entity.setId(queryManager.insertAndGetId(
-                    queryManager.getQuery("role.create"),
-                    entity.getRoleName()
-            ));
+    public boolean delete(Role entity) {
+        return delete(entity.getId());
+    }
 
-            return entity;
+    @Override
+    public Role save(Role entity) {
+        try {
+            return Role.builder()
+                    .id(queryManager.insertAndGetId(
+                            queryManager.getQuery("role.create")))
+                    .roleName(entity.getRoleName())
+                    .build();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -139,7 +143,7 @@ public class MySqlRoleDao extends MySqlAbstractDao implements RoleDao {
     }
 
     @Override
-    public Role update(Role entity) throws DataAccessException {
+    public Role update(Role entity) {
         try {
             queryManager.update(
                     queryManager.getQuery("role.update"),

@@ -19,7 +19,7 @@ public class DefaultTransactionManager {
         this.connectionPool = connectionPool;
     }
 
-    public ConnectionWrapper getConnection() throws DataAccessException {
+    public ConnectionWrapper getConnection() {
         ConnectionWrapper connectionWrapper = connections.get();
         if (nonNull(connectionWrapper)) {
             return connectionWrapper;
@@ -37,7 +37,7 @@ public class DefaultTransactionManager {
         }
     }
 
-    public void beginTransaction() throws DataAccessException {
+    public void beginTransaction() {
         ConnectionWrapper connectionWrapper = connections.get();
         if (nonNull(connectionWrapper)) {
             try {
@@ -51,7 +51,7 @@ public class DefaultTransactionManager {
         }
     }
 
-    public Savepoint setSavepoint() throws DataAccessException {
+    public Savepoint setSavepoint() {
         Savepoint savepoint;
 
         ConnectionWrapper connectionWrapper = connections.get();
@@ -69,7 +69,7 @@ public class DefaultTransactionManager {
         }
     }
 
-    public void rollback() throws DataAccessException {
+    public void rollback() {
         ConnectionWrapper connectionWrapper = connections.get();
         if (isNull(connectionWrapper)) {
             throw new DataAccessException();
@@ -82,7 +82,7 @@ public class DefaultTransactionManager {
         }
     }
 
-    public void commit() throws DataAccessException {
+    public void commit() {
         ConnectionWrapper connectionWrapper = connections.get();
         if (isNull(connectionWrapper)) {
             throw new DataAccessException();
@@ -95,7 +95,7 @@ public class DefaultTransactionManager {
         }
     }
 
-    public void closeConnection() throws DataAccessException {
+    public void closeConnection() {
         ConnectionWrapper connectionWrapper = connections.get();
         if (isNull(connectionWrapper)) {
             throw new DataAccessException();

@@ -1,8 +1,8 @@
 package com.final_project_college.dao.impl.mysql;
 
-import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.CollegeDao;
-import com.final_project_college.dto.College;
+import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
+import com.final_project_college.domain.dto.College;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class MySqlCollegeDao extends MySqlAbstractDao implements CollegeDao {
     }
 
     @Override
-    public int getNumberOfRows() throws DataAccessException {
+    public int numberOfRows() {
         try {
             return getNumberOfRows(queryManager
                     .getQuery("college.count"));
@@ -42,7 +42,7 @@ public class MySqlCollegeDao extends MySqlAbstractDao implements CollegeDao {
     }
 
     @Override
-    public List<College> findAllPaginated(int start, int count) throws DataAccessException {
+    public List<College> getAllPaginated(int start, int count) {
         try {
             return queryManager.select(
                     queryManager.getQuery("college.findAllPaginated"),
@@ -62,7 +62,7 @@ public class MySqlCollegeDao extends MySqlAbstractDao implements CollegeDao {
     }
 
     @Override
-    public List<College> findAll() throws DataAccessException {
+    public List<College> getAll() {
         try {
             return queryManager.select(
                     queryManager.getQuery("college.findAll"),
@@ -79,7 +79,7 @@ public class MySqlCollegeDao extends MySqlAbstractDao implements CollegeDao {
     }
 
     @Override
-    public Optional<College> getEntityById(long id) throws DataAccessException {
+    public Optional<College> get(long id) {
         try {
             return queryManager.select(
                     queryManager.getQuery("college.findById"),
@@ -97,7 +97,7 @@ public class MySqlCollegeDao extends MySqlAbstractDao implements CollegeDao {
     }
 
     @Override
-    public boolean deleteById(long id) throws DataAccessException {
+    public boolean delete(long id) {
         try {
 
             return deleteById(id, queryManager
@@ -111,15 +111,19 @@ public class MySqlCollegeDao extends MySqlAbstractDao implements CollegeDao {
     }
 
     @Override
-    public College create(College entity) throws DataAccessException {
-        try {
-            entity.setId(queryManager.insertAndGetId(
-                    queryManager.getQuery("college.create"),
-                    entity.getName(),
-                    entity.getDescription()
-            ));
+    public boolean delete(College entity) {
+        return delete(entity.getId());
+    }
 
-            return entity;
+    @Override
+    public College save(College entity) {
+        try {
+            return College.builder()
+                    .id(queryManager.insertAndGetId(
+                            queryManager.getQuery("college.create")))
+                    .name(entity.getName())
+                    .description(entity.getDescription())
+                    .build();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -128,7 +132,7 @@ public class MySqlCollegeDao extends MySqlAbstractDao implements CollegeDao {
     }
 
     @Override
-    public College update(College entity) throws DataAccessException {
+    public College update(College entity) {
         try {
             queryManager.update(
                     queryManager.getQuery("college.update"),

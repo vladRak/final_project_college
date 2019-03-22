@@ -17,17 +17,17 @@ public enum ConnectionPoolImpl implements ConnectionPool {
     INSTANCE;
 
     private static final String DATASOURCE_NAME = "jdbc/exposition_calendar";
-    private static Context initContext;
-    private static Context envContext;
     private static DataSource dataSource;
     private static final Logger logger = LoggerFactory.getLogger(ConnectionPoolImpl.class);
 
+//    Context initContext;
+//    Context envContext;
+
     static {
         try {
-            initContext = new InitialContext();
-            envContext = (Context) initContext.lookup("java:/comp/env");
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
             dataSource = (DataSource) envContext.lookup(DATASOURCE_NAME);
-
         } catch (NamingException e) {
             logger.error(e.toString());
             e.printStackTrace();
@@ -40,7 +40,7 @@ public enum ConnectionPoolImpl implements ConnectionPool {
     }
 
     @Override
-    public void closeConnection(ConnectionWrapper connection) throws SQLException, DataAccessException {
+    public void closeConnection(ConnectionWrapper connection) throws SQLException {
         connection.close();
     }
 }

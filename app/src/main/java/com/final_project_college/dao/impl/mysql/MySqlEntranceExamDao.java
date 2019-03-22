@@ -2,7 +2,7 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.EntranceExamDao;
-import com.final_project_college.dto.EntranceExam;
+import com.final_project_college.domain.dto.EntranceExam;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class MySqlEntranceExamDao extends MySqlAbstractDao implements EntranceEx
     }
 
     @Override
-    public int getNumberOfRows() throws DataAccessException {
+    public int numberOfRows() {
         try {
             return getNumberOfRows(queryManager
                     .getQuery("entrance_exam.count"));
@@ -42,7 +42,7 @@ public class MySqlEntranceExamDao extends MySqlAbstractDao implements EntranceEx
     }
 
     @Override
-    public List<EntranceExam> findAllPaginated(int start, int count) throws DataAccessException {
+    public List<EntranceExam> getAllPaginated(int start, int count) {
         try {
             return queryManager.select(
                     queryManager.getQuery("entrance_exam.findAllPaginated"),
@@ -63,7 +63,7 @@ public class MySqlEntranceExamDao extends MySqlAbstractDao implements EntranceEx
     }
 
     @Override
-    public List<EntranceExam> findAll() throws DataAccessException {
+    public List<EntranceExam> getAll() {
         try {
             return queryManager.select(
                     queryManager.getQuery("entrance_exam.findAll"),
@@ -81,7 +81,7 @@ public class MySqlEntranceExamDao extends MySqlAbstractDao implements EntranceEx
     }
 
     @Override
-    public Optional<EntranceExam> getEntityById(long id) throws DataAccessException {
+    public Optional<EntranceExam> get(long id) {
         try {
             return queryManager.select(
                     queryManager.getQuery("entrance_exam.findById"),
@@ -100,7 +100,7 @@ public class MySqlEntranceExamDao extends MySqlAbstractDao implements EntranceEx
     }
 
     @Override
-    public boolean deleteById(long id) throws DataAccessException {
+    public boolean delete(long id) {
         try {
 
             return deleteById(id, queryManager
@@ -114,16 +114,20 @@ public class MySqlEntranceExamDao extends MySqlAbstractDao implements EntranceEx
     }
 
     @Override
-    public EntranceExam create(EntranceExam entity) throws DataAccessException {
-        try {
-            entity.setId(queryManager.insertAndGetId(
-                    queryManager.getQuery("entrance_exam.create"),
-                    entity.getMinRating(),
-                    entity.getExamSubjectId(),
-                    entity.getSpecialtyId()
-            ));
+    public boolean delete(EntranceExam entity) {
+        return delete(entity.getId());
+    }
 
-            return entity;
+    @Override
+    public EntranceExam save(EntranceExam entity) {
+        try {
+            return EntranceExam.builder()
+                    .id(queryManager.insertAndGetId(
+                            queryManager.getQuery("entrance_exam.create")))
+                    .minRating(entity.getMinRating())
+                    .examSubjectId(entity.getExamSubjectId())
+                    .specialtyId(entity.getSpecialtyId())
+                    .build();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -132,7 +136,7 @@ public class MySqlEntranceExamDao extends MySqlAbstractDao implements EntranceEx
     }
 
     @Override
-    public EntranceExam update(EntranceExam entity) throws DataAccessException {
+    public EntranceExam update(EntranceExam entity) {
         try {
             queryManager.update(
                     queryManager.getQuery("entrance_exam.update"),

@@ -1,6 +1,6 @@
 package com.final_project_college.dao;
 
-import com.final_project_college.dto.SchoolExam;
+import com.final_project_college.domain.dto.SchoolExam;
 
 import java.util.List;
 

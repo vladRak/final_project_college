@@ -2,7 +2,7 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.UserDao;
-import com.final_project_college.dto.User;
+import com.final_project_college.domain.dto.User;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     }
 
     @Override
-    public int getNumberOfRows() throws DataAccessException {
+    public int numberOfRows() {
         try {
             return getNumberOfRows(queryManager
                     .getQuery("user.count"));
@@ -62,7 +62,7 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     }
 
     @Override
-    public List<User> findAllPaginated(int start, int count) throws DataAccessException {
+    public List<User> getAllPaginated(int start, int count) {
         try {
             return queryManager.select(
                     queryManager.getQuery("user.findAllPaginated"),
@@ -87,7 +87,7 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     }
 
     @Override
-    public List<User> findAll() throws DataAccessException {
+    public List<User> getAll() {
         try {
             return queryManager.select(
                     queryManager.getQuery("user.findAll"),
@@ -109,7 +109,7 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     }
 
     @Override
-    public Optional<User> getEntityById(long id) throws DataAccessException {
+    public Optional<User> get(long id) {
         try {
             return queryManager.select(
                     queryManager.getQuery("user.findById"),
@@ -132,7 +132,7 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     }
 
     @Override
-    public boolean deleteById(long id) throws DataAccessException {
+    public boolean delete(long id) {
         try {
 
             return deleteById(id, queryManager
@@ -146,20 +146,24 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     }
 
     @Override
-    public User create(User entity) throws DataAccessException {
-        try {
-            entity.setId(queryManager.insertAndGetId(
-                    queryManager.getQuery("user.create"),
-                    entity.getFirstName(),
-                    entity.getLastName(),
-                    entity.getEMail(),
-                    entity.getPassword(),
-                    entity.isVerified(),
-                    entity.isBlocked(),
-                    entity.getRoleId()
-            ));
+    public boolean delete(User entity) {
+        return delete(entity.getId());
+    }
 
-            return entity;
+    @Override
+    public User save(User entity) {
+        try {
+            return User.builder()
+                    .id(queryManager.insertAndGetId(
+                            queryManager.getQuery("user.create")))
+                    .firstName(entity.getFirstName())
+                    .lastName(entity.getLastName())
+                    .eMail(entity.getEMail())
+                    .password(entity.getPassword())
+                    .verified(entity.isVerified())
+                    .blocked(entity.isBlocked())
+                    .roleId(entity.getRoleId())
+                    .build();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -168,7 +172,7 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     }
 
     @Override
-    public User update(User entity) throws DataAccessException {
+    public User update(User entity) {
         try {
             queryManager.update(
                     queryManager.getQuery("user.update"),

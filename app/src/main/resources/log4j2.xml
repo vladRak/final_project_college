@@ -64,7 +64,7 @@
             <AppenderRef ref="Console-Appender" level="info"/>
         </Logger>
 
-        <Logger name="com.final_project_college.external_config.FileExternalConfigLoader" level="info" additivity="false">
+        <Logger name="com.final_project_college.util.external_config.FileExternalConfigLoader" level="info" additivity="false">
             <AppenderRef ref="File-Appender" level="error"/>
             <AppenderRef ref="Console-Appender" level="info"/>
         </Logger>

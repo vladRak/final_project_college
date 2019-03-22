@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 
 public class DefaultQueryManager implements QueryManager {
 
-    private final ResourceBundle resourceBundle;// = ResourceBundle.getBundle("queriesSQL");
+    private final ResourceBundle resourceBundle;
     private final PreparedStatementParameterSetter preparedStatementParameterSetter;
     private final ConnectionWrapper connection;
 

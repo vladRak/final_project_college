@@ -1,7 +1,5 @@
 package com.final_project_college.dao.jdbc;
 
-import com.final_project_college.dao.jdbc.RowMapper;
-
 import java.sql.SQLException;
 import java.util.List;
 

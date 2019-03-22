@@ -1,13 +1,12 @@
 package com.final_project_college.dao;
 
-import com.final_project_college.dto.Application;
-import com.final_project_college.exception.DataAccessException;
+import com.final_project_college.domain.dto.Application;
 
 import java.util.List;
 
 public interface ApplicationDao extends GenericDao<Application> {
 
-    List<Application> getApplicationsByApplicantId(long applicantId) throws DataAccessException;
+    List<Application> getApplicationsByApplicantId(long applicantId);
 
     List<Application> getApplicationsByCollegeId(long collegeId);
 

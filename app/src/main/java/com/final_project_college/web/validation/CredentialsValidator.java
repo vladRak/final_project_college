@@ -3,7 +3,7 @@ package com.final_project_college.web.validation;
 import com.final_project_college.annotation.AdminCredentials;
 import com.final_project_college.annotation.Controller;
 import com.final_project_college.annotation.exception.CredentialsException;
-import com.final_project_college.service.impl.WebRole;
+import com.final_project_college.web.filter.WebRole;
 
 import javax.servlet.http.HttpServletRequest;
 

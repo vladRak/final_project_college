@@ -2,7 +2,7 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.SpecialtyDao;
-import com.final_project_college.dto.Specialty;
+import com.final_project_college.domain.dto.Specialty;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     }
 
     @Override
-    public int getNumberOfRows() throws DataAccessException {
+    public int numberOfRows() {
         try {
             return getNumberOfRows(queryManager
                     .getQuery("specialty.count"));
@@ -42,7 +42,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     }
 
     @Override
-    public List<Specialty> findAllPaginated(int start, int count) throws DataAccessException {
+    public List<Specialty> getAllPaginated(int start, int count) {
         try {
             return queryManager.select(
                     queryManager.getQuery("specialty.findAllPaginated"),
@@ -61,7 +61,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     }
 
     @Override
-    public List<Specialty> findAll() throws DataAccessException {
+    public List<Specialty> getAll() {
         try {
             return queryManager.select(
                     queryManager.getQuery("specialty.findAll"),
@@ -77,7 +77,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     }
 
     @Override
-    public Optional<Specialty> getEntityById(long id) throws DataAccessException {
+    public Optional<Specialty> get(long id) {
         try {
             return queryManager.select(
                     queryManager.getQuery("specialty.findById"),
@@ -94,7 +94,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     }
 
     @Override
-    public boolean deleteById(long id) throws DataAccessException {
+    public boolean delete(long id) {
         try {
 
             return deleteById(id, queryManager
@@ -108,14 +108,18 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     }
 
     @Override
-    public Specialty create(Specialty entity) throws DataAccessException {
-        try {
-            entity.setId(queryManager.insertAndGetId(
-                    queryManager.getQuery("specialty.create"),
-                    entity.getSpecialtyName()
-            ));
+    public boolean delete(Specialty entity) {
+        return delete(entity.getId());
+    }
 
-            return entity;
+    @Override
+    public Specialty save(Specialty entity) {
+        try {
+            return Specialty.builder()
+                    .id(queryManager.insertAndGetId(
+                            queryManager.getQuery("specialty.create")))
+                    .specialtyName(entity.getSpecialtyName())
+                    .build();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -124,7 +128,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     }
 
     @Override
-    public Specialty update(Specialty entity) throws DataAccessException {
+    public Specialty update(Specialty entity) {
         try {
             queryManager.update(
                     queryManager.getQuery("specialty.update"),

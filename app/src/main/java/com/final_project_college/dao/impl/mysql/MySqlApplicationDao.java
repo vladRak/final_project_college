@@ -2,7 +2,7 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.ApplicationDao;
-import com.final_project_college.dto.Application;
+import com.final_project_college.domain.dto.Application;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +20,7 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
     }
 
     @Override
-    public List<Application> getApplicationsByApplicantId(long applicantId)
-            throws DataAccessException {
+    public List<Application> getApplicationsByApplicantId(long applicantId) {
         try {
             return queryManager.select(
                     queryManager.getQuery("application.findApplicationsByApplicantId"),
@@ -59,7 +58,7 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
     }
 
     @Override
-    public int getNumberOfRows() throws DataAccessException {
+    public int numberOfRows() {
         try {
 
             return getNumberOfRows(queryManager
@@ -73,8 +72,7 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
     }
 
     @Override
-    public List<Application> findAllPaginated(int start, int count)
-            throws DataAccessException {
+    public List<Application> getAllPaginated(int start, int count) {
         try {
             return queryManager.select(
                     queryManager.getQuery("applicant.findAllPaginated"),
@@ -98,7 +96,7 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
     }
 
     @Override
-    public List<Application> findAll() throws DataAccessException {
+    public List<Application> getAll() {
         try {
             return queryManager.select(
                     queryManager.getQuery("applicant.findAll"),
@@ -119,7 +117,7 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
     }
 
     @Override
-    public Optional<Application> getEntityById(long id) throws DataAccessException {
+    public Optional<Application> get(long id) {
         try {
             return queryManager.select(
                     queryManager.getQuery("application.findById"),
@@ -141,7 +139,7 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
     }
 
     @Override
-    public boolean deleteById(long id) throws DataAccessException {
+    public boolean delete(long id) {
         try {
 
             return deleteById(id, queryManager
@@ -155,19 +153,23 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
     }
 
     @Override
-    public Application create(Application entity) throws DataAccessException {
-        try {
-            entity.setId(queryManager.insertAndGetId(
-                    queryManager.getQuery("application.create"),
-                    entity.isContract(),
-                    entity.getCreated(),
-                    entity.getApplicantId(),
-                    entity.getCollegeId(),
-                    entity.getSpecialtyId(),
-                    entity.getStatusId()
-            ));
+    public boolean delete(Application entity) {
+        return delete(entity.getId());
+    }
 
-            return entity;
+    @Override
+    public Application save(Application entity) {
+        try {
+            return Application.builder()
+                    .id(queryManager.insertAndGetId(
+                            queryManager.getQuery("application.create")))
+                    .contract(entity.isContract())
+                    .created(entity.getCreated())
+                    .applicantId(entity.getApplicantId())
+                    .collegeId(entity.getCollegeId())
+                    .specialtyId(entity.getSpecialtyId())
+                    .statusId(entity.getStatusId())
+                    .build();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -176,7 +178,7 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
     }
 
     @Override
-    public Application update(Application entity) throws DataAccessException {
+    public Application update(Application entity) {
         try {
             queryManager.update(
                     queryManager.getQuery("application.update"),

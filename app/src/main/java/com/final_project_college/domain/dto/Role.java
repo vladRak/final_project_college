@@ -1,4 +1,4 @@
-package com.final_project_college.dto;
+package com.final_project_college.domain.dto;
 
 import lombok.*;
 

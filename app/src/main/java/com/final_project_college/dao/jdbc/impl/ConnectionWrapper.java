@@ -1,7 +1,5 @@
 package com.final_project_college.dao.jdbc.impl;
 
-import com.final_project_college.exception.DataAccessException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -26,8 +24,8 @@ public class ConnectionWrapper implements AutoCloseable {
         return connection;
     }
 
-    public void close() throws SQLException, DataAccessException {
+    public void close() throws SQLException {
         if (connection.getAutoCommit()) connection.close();
-        else throw new DataAccessException("Transaction does not finish.");
+        else throw new SQLException("Transaction does not finish.");
     }
 }

@@ -1,21 +1,20 @@
 package com.final_project_college.dao.jdbc;
 
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
-import com.final_project_college.exception.DataAccessException;
 
 import java.sql.Savepoint;
 
 public interface TransactionManager {
 
-    ConnectionWrapper getConnection() throws DataAccessException;
+    ConnectionWrapper getConnection();
 
-    void beginTransaction() throws DataAccessException;
+    void beginTransaction();
 
-    Savepoint setSavepoint() throws DataAccessException;
+    Savepoint setSavepoint();
 
-    void rollback() throws DataAccessException;
+    void rollback();
 
-    void commit() throws DataAccessException;
+    void commit();
 
-    void closeConnection() throws DataAccessException;
+    void closeConnection();
 }

@@ -1,4 +1,4 @@
-package com.final_project_college.external_config;
+package com.final_project_college.util.external_config;
 
 import com.final_project_college.exception.ExternalConfigException;
 

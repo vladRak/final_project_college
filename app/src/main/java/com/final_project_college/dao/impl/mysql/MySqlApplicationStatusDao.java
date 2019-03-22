@@ -2,7 +2,7 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.ApplicationStatusDao;
-import com.final_project_college.dto.ApplicationStatus;
+import com.final_project_college.domain.dto.ApplicationStatus;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class MySqlApplicationStatusDao extends MySqlAbstractDao implements Appli
     }
 
     @Override
-    public int getNumberOfRows() throws DataAccessException {
+    public int numberOfRows() {
         try {
             return getNumberOfRows(queryManager
                     .getQuery("application_status.count"));
@@ -32,7 +32,7 @@ public class MySqlApplicationStatusDao extends MySqlAbstractDao implements Appli
     }
 
     @Override
-    public List<ApplicationStatus> findAllPaginated(int start, int count) throws DataAccessException {
+    public List<ApplicationStatus> getAllPaginated(int start, int count) {
         try {
             return queryManager.select(
                     queryManager.getQuery("application_status.findAllPaginated"),
@@ -51,7 +51,7 @@ public class MySqlApplicationStatusDao extends MySqlAbstractDao implements Appli
     }
 
     @Override
-    public List<ApplicationStatus> findAll() throws DataAccessException {
+    public List<ApplicationStatus> getAll() {
         try {
             return queryManager.select(
                     queryManager.getQuery("application_status.findAll"),
@@ -67,7 +67,7 @@ public class MySqlApplicationStatusDao extends MySqlAbstractDao implements Appli
     }
 
     @Override
-    public Optional<ApplicationStatus> getEntityById(long id) throws DataAccessException {
+    public Optional<ApplicationStatus> get(long id) {
         try {
             return queryManager.select(
                     queryManager.getQuery("application_status.findById"),
@@ -84,7 +84,7 @@ public class MySqlApplicationStatusDao extends MySqlAbstractDao implements Appli
     }
 
     @Override
-    public boolean deleteById(long id) throws DataAccessException {
+    public boolean delete(long id) {
         try {
             return deleteById(id, queryManager
                     .getQuery("application_status.deleteById"));
@@ -96,14 +96,18 @@ public class MySqlApplicationStatusDao extends MySqlAbstractDao implements Appli
     }
 
     @Override
-    public ApplicationStatus create(ApplicationStatus entity) throws DataAccessException {
-        try {
-            entity.setId(queryManager.insertAndGetId(
-                    queryManager.getQuery("application_status.create"),
-                    entity.getStatusName()
-            ));
+    public boolean delete(ApplicationStatus entity) {
+        return delete(entity.getId());
+    }
 
-            return entity;
+    @Override
+    public ApplicationStatus save(ApplicationStatus entity) {
+        try {
+            return ApplicationStatus.builder()
+                    .id(queryManager.insertAndGetId(
+                            queryManager.getQuery("application_status.create")))
+                    .statusName(entity.getStatusName())
+                    .build();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -112,7 +116,7 @@ public class MySqlApplicationStatusDao extends MySqlAbstractDao implements Appli
     }
 
     @Override
-    public ApplicationStatus update(ApplicationStatus entity) throws DataAccessException {
+    public ApplicationStatus update(ApplicationStatus entity) {
         try {
             queryManager.update(
                     queryManager.getQuery("application_status.update"),

@@ -44,8 +44,6 @@ public class DefaultPreparedStatementParameterSetter implements PreparedStatemen
                 statement.setDate(parameterIndex, new java.sql.Date(((Calendar) parameter).getTimeInMillis()));
             } else if (parameter instanceof BigDecimal) {
                 statement.setBigDecimal(parameterIndex, (BigDecimal) parameter);
-            } else if (parameter instanceof byte[]) {
-                statement.setBytes(parameterIndex, (byte[]) parameter);
             } else {
                 throw new IllegalArgumentException(String.format(
                         "Unknown type of the parameter is found. [param: %s, paramIndex: %s]", parameter, parameterIndex));
