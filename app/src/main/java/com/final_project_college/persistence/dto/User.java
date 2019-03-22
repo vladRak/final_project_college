@@ -1,10 +1,9 @@
-package com.final_project_college.dto;
+package com.final_project_college.persistence.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
-@Data
+@Getter
+@ToString
 @EqualsAndHashCode(callSuper = true)
 public class User extends Entity {
 
@@ -17,7 +16,7 @@ public class User extends Entity {
     private long roleId;
 
     @Builder
-    public User(long id, String firstName,
+    private User(long id, String firstName,
                 String lastName, String eMail,
                 String password, boolean verified,
                 boolean blocked, long roleId) {

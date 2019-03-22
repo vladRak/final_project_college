@@ -1,10 +1,12 @@
-package com.final_project_college.dto;
+package com.final_project_college.persistence.dto;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
 @EqualsAndHashCode(callSuper = true)
 public class College extends Entity {
 
@@ -12,8 +14,8 @@ public class College extends Entity {
     private String description;
 
     @Builder
-    public College(long id, String name,
-                   String description) {
+    private College(long id, String name,
+                    String description) {
         super(id);
         this.name = name;
         this.description = description;

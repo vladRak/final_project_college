@@ -1,17 +1,16 @@
-package com.final_project_college.dto;
+package com.final_project_college.persistence.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
-@Data
+@Getter
+@ToString
 @EqualsAndHashCode(callSuper = true)
 public class Privilege extends Entity {
 
     private String privilegeName;
 
     @Builder
-    public Privilege(long id, String privilegeName) {
+    private Privilege(long id, String privilegeName) {
         super(id);
         this.privilegeName = privilegeName;
     }

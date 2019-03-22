@@ -1,6 +1,6 @@
 package com.final_project_college.dao.impl.mysql;
 
-import com.final_project_college.connection.ConnectionWrapper;
+import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.*;
 
 public class MySqlDaoFactory implements AbstractDaoFactory {

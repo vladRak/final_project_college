@@ -1,6 +1,5 @@
 package com.final_project_college.dao.jdbc.impl;
 
-import com.final_project_college.connection.ConnectionWrapper;
 import com.final_project_college.dao.jdbc.PreparedStatementParameterSetter;
 import com.final_project_college.dao.jdbc.RowMapper;
 import com.final_project_college.dao.jdbc.QueryManager;

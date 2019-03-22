@@ -1,6 +1,6 @@
 package com.final_project_college.dao;
 
-import com.final_project_college.dto.User;
+import com.final_project_college.persistence.dto.User;
 
 import java.util.List;
 import java.util.Optional;

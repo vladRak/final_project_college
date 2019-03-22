@@ -1,6 +1,6 @@
 package com.final_project_college.web.listener;
 
-import com.final_project_college.connection.impl.ConnectionPoolImpl;
+import com.final_project_college.dao.jdbc.impl.ConnectionPoolImpl;
 import com.final_project_college.dao.impl.mysql.MySqlDaoFactory;
 import com.final_project_college.dao.jdbc.impl.DefaultTransactionManager;
 import com.final_project_college.service.impl.ServiceFactory;

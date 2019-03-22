@@ -1,8 +1,8 @@
 package com.final_project_college.dao.impl.mysql;
 
-import com.final_project_college.connection.ConnectionWrapper;
+import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.ApplicationStatusDao;
-import com.final_project_college.dto.ApplicationStatus;
+import com.final_project_college.persistence.dto.ApplicationStatus;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

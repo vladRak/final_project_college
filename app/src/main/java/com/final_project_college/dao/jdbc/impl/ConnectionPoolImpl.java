@@ -1,8 +1,7 @@
-package com.final_project_college.connection.impl;
+package com.final_project_college.dao.jdbc.impl;
 
 
-import com.final_project_college.connection.ConnectionPool;
-import com.final_project_college.connection.ConnectionWrapper;
+import com.final_project_college.dao.jdbc.ConnectionPool;
 import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

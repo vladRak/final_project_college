@@ -1,12 +1,14 @@
-package com.final_project_college.dto;
+package com.final_project_college.persistence.dto;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
-@Data
+@Getter
+@ToString
 @EqualsAndHashCode(callSuper = true)
 public class Application extends Entity {
 
@@ -18,10 +20,10 @@ public class Application extends Entity {
     private long statusId;
 
     @Builder
-    public Application(long id, boolean contract,
-                       Timestamp created, long applicantId,
-                       long collegeId, long specialtyId,
-                       long statusId) {
+    private Application(long id, boolean contract,
+                        Timestamp created, long applicantId,
+                        long collegeId, long specialtyId,
+                        long statusId) {
         super(id);
         this.contract = contract;
         this.created = created;

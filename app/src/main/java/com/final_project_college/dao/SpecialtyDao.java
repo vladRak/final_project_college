@@ -1,7 +1,5 @@
 package com.final_project_college.dao;
 
-import com.final_project_college.dto.*;
-
 import java.util.List;
 import java.util.Optional;
 

@@ -1,6 +1,6 @@
 package com.final_project_college.dao;
 
-import com.final_project_college.connection.ConnectionWrapper;
+import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 
 public interface AbstractDaoFactory {
 

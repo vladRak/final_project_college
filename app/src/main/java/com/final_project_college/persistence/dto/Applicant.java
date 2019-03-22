@@ -1,12 +1,11 @@
-package com.final_project_college.dto;
+package com.final_project_college.persistence.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Data
+@Getter
+@ToString
 @EqualsAndHashCode(callSuper = true)
 public class Applicant extends Entity {
 
@@ -14,7 +13,7 @@ public class Applicant extends Entity {
     private long userId;
 
     @Builder
-    public Applicant(long id,
+    private Applicant(long id,
                      BigDecimal certificateRating,
                      long userId) {
         super(id);

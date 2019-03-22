@@ -1,18 +1,20 @@
-package com.final_project_college.dto;
+package com.final_project_college.persistence.dto;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
 @EqualsAndHashCode(callSuper = true)
 public class ExamSubject extends Entity {
 
     private String subjectName;
 
     @Builder
-    public ExamSubject(long id,
-                       String subjectName) {
+    private ExamSubject(long id,
+                        String subjectName) {
         super(id);
         this.subjectName = subjectName;
     }

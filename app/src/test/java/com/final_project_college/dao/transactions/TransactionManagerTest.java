@@ -1,7 +1,7 @@
 package com.final_project_college.dao.transactions;
 
-import com.final_project_college.connection.ConnectionPool;
-import com.final_project_college.connection.ConnectionWrapper;
+import com.final_project_college.dao.jdbc.ConnectionPool;
+import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.jdbc.impl.DefaultTransactionManager;
 import org.junit.After;
 import org.junit.Before;

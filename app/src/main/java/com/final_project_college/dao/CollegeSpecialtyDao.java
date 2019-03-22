@@ -1,6 +1,6 @@
 package com.final_project_college.dao;
 
-import com.final_project_college.dto.CollegeSpecialty;
+import com.final_project_college.persistence.dto.CollegeSpecialty;
 
 import java.util.List;
 
