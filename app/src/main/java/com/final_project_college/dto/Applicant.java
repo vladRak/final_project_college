@@ -4,35 +4,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Applicant extends Entity {
 
-    private String firstName;
-    private String lastName;
-    private boolean valid;
-    private byte[] photo;
-    private String phoneNumber;
+    private BigDecimal certificateRating;
     private long userId;
-    private long eIEvaluationId;
-    private long certificateId;
-    private long exemptionId;
 
     @Builder
-    public Applicant(long id, String firstName,
-                     String lastName, boolean valid,
-                     byte[] photo, String phoneNumber,
-                     long userId, long eIEvaluationId,
-                     long certificateId, long exemptionId) {
+    public Applicant(long id,
+                     BigDecimal certificateRating,
+                     long userId) {
         super(id);
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.valid = valid;
-        this.photo = photo;
-        this.phoneNumber = phoneNumber;
+        this.certificateRating = certificateRating;
         this.userId = userId;
-        this.eIEvaluationId = eIEvaluationId;
-        this.certificateId = certificateId;
-        this.exemptionId = exemptionId;
     }
 }

@@ -2,6 +2,7 @@ package com.final_project_college.dao.transactions;
 
 import com.final_project_college.connection.ConnectionPool;
 import com.final_project_college.connection.ConnectionWrapper;
+import com.final_project_college.dao.jdbc.impl.DefaultTransactionManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,14 +13,14 @@ import static org.mockito.Mockito.*;
 
 public class TransactionManagerTest {
     ConnectionPool connectionPool;
-    TransactionManager transactionManager;
+    DefaultTransactionManager transactionManager;
     Connection connection;
 
     @Before
     public void setUp() throws Exception {
         connection = mock(Connection.class);
         connectionPool = mock(ConnectionPool.class);
-        transactionManager = new TransactionManager(connectionPool);
+        transactionManager = new DefaultTransactionManager(connectionPool);
     }
 
     @After

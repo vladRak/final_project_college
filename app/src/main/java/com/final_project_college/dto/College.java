@@ -10,16 +10,12 @@ public class College extends Entity {
 
     private String name;
     private String description;
-    private long cityId;
 
     @Builder
     public College(long id, String name,
-                   String description, long cityId) {
+                   String description) {
         super(id);
         this.name = name;
         this.description = description;
-        this.cityId = cityId;
     }
-
-
 }

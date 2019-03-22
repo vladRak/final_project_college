@@ -2,7 +2,7 @@ package com.final_project_college.util;
 
 
 import com.final_project_college.dao.AbstractDaoFactory;
-import com.final_project_college.dao.transactions.TransactionManager;
+import com.final_project_college.dao.jdbc.impl.DefaultTransactionManager;
 import com.final_project_college.service.impl.ServiceFactory;
 import com.final_project_college.web.util.WebControllerHandler;
 import com.final_project_college.web.validation.CredentialsValidator;
@@ -27,8 +27,8 @@ public enum ContextMapper {
         return (ServiceFactory) servletContext.getAttribute("serviceFactory");
     }
 
-    public TransactionManager getTransactionManager() {
-        return (TransactionManager) servletContext.getAttribute("transactionManager");
+    public DefaultTransactionManager getTransactionManager() {
+        return (DefaultTransactionManager) servletContext.getAttribute("transactionManager");
     }
 
     public WebControllerHandler getWebControllerHandler() {

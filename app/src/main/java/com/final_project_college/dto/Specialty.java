@@ -8,17 +8,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Specialty extends Entity {
 
-    private short specialtyCode;
     private String specialtyName;
-    private long branchId;
 
     @Builder
-    public Specialty(long id, short specialtyCode,
-                     String specialtyName, long branchId) {
+    public Specialty(long id,
+                     String specialtyName) {
         super(id);
-        this.specialtyCode = specialtyCode;
         this.specialtyName = specialtyName;
-        this.branchId = branchId;
     }
 
 }

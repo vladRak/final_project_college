@@ -10,15 +10,15 @@ public class SchoolExam extends Entity {
 
     private short rating;
     private long examSubjectId;
-    private long eIEvaluationId;
+    private long applicantId;
 
     @Builder
     public SchoolExam(long id, short rating,
                       long examSubjectId,
-                      long eIEvaluationId) {
+                      long applicantId) {
         super(id);
         this.rating = rating;
         this.examSubjectId = examSubjectId;
-        this.eIEvaluationId = eIEvaluationId;
+        this.applicantId = applicantId;
     }
 }

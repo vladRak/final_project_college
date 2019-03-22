@@ -2,9 +2,9 @@ package com.final_project_college.service.impl;
 
 import com.final_project_college.connection.ConnectionWrapper;
 import com.final_project_college.dao.AbstractDaoFactory;
+import com.final_project_college.dao.jdbc.impl.DefaultTransactionManager;
 import com.final_project_college.dao.old.ExpositionDao;
-import com.final_project_college.dao.impl.mysql.MySQLDaoFactory;
-import com.final_project_college.dao.transactions.TransactionManager;
+import com.final_project_college.dao.impl.mysql.MySqlDaoFactory;
 import com.final_project_college.dto.old.Exposition;
 import com.final_project_college.service.ExpositionService;
 import com.final_project_college.util.ContextMapper;
@@ -24,10 +24,10 @@ public class ExpositionServiceImplTest {
     @Test
     public void findAllExpositions() throws Exception {
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
-        AbstractDaoFactory daoFactory = mock(MySQLDaoFactory.class);
+        AbstractDaoFactory daoFactory = mock(MySqlDaoFactory.class);
         ConnectionWrapper connectionWrapper = PowerMockito.mock(ConnectionWrapper.class);
         ExpositionDao expositionDao = mock(ExpositionDao.class);
-        TransactionManager transactionManager = mock(TransactionManager.class);
+        DefaultTransactionManager transactionManager = mock(DefaultTransactionManager.class);
         Exposition exposition1 = Exposition.getEmptyExposition();
         Exposition exposition2 = Exposition.getEmptyExposition();
         List<Exposition> expected = Arrays.asList(exposition1, exposition2);

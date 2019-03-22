@@ -10,9 +10,7 @@ import java.sql.Timestamp;
 @EqualsAndHashCode(callSuper = true)
 public class Application extends Entity {
 
-    private boolean active;
     private boolean contract;
-    private byte priority;
     private Timestamp created;
     private long applicantId;
     private long collegeId;
@@ -20,15 +18,12 @@ public class Application extends Entity {
     private long statusId;
 
     @Builder
-    public Application(long id, boolean active,
-                       boolean contract, byte priority,
+    public Application(long id, boolean contract,
                        Timestamp created, long applicantId,
                        long collegeId, long specialtyId,
                        long statusId) {
         super(id);
-        this.active = active;
         this.contract = contract;
-        this.priority = priority;
         this.created = created;
         this.applicantId = applicantId;
         this.collegeId = collegeId;

@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class User extends Entity {
 
+    private String firstName;
+    private String lastName;
     private String eMail;
     private String password;
     private boolean verified;
@@ -15,10 +17,13 @@ public class User extends Entity {
     private long roleId;
 
     @Builder
-    public User(long id, String eMail,
+    public User(long id, String firstName,
+                String lastName, String eMail,
                 String password, boolean verified,
                 boolean blocked, long roleId) {
         super(id);
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.eMail = eMail;
         this.password = password;
         this.verified = verified;
