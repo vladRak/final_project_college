@@ -1,9 +1,8 @@
 package com.final_project_college.dao.impl.mysql;
 
-import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.ApplicantDao;
+import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.Applicant;
-import com.final_project_college.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,139 +19,96 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
     }
 
     @Override
-    public List<Applicant> getApplicantsByName(String name) {
+    public List<Applicant> getApplicantsByName(String name) throws SQLException {
         return null;
     }
 
     @Override
-    public List<Applicant> getApplicantsByCollegeId(long collegeId) {
+    public List<Applicant> getApplicantsByCollegeId(long collegeId) throws SQLException {
         return null;
     }
 
     @Override
-    public Optional<Applicant> getApplicantBySchoolExamId(long schoolExamId) {
+    public Optional<Applicant> getApplicantBySchoolExamId(long schoolExamId) throws SQLException {
         return Optional.empty();
     }
 
     @Override
-    public int numberOfRows() {
-        try {
+    public int numberOfRows() throws SQLException {
+        return getNumberOfRows(queryManager
+                .getQuery("applicant.count"));
 
-            return getNumberOfRows(queryManager
-                    .getQuery("applicant.count"));
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
     }
 
     @Override
-    public List<Applicant> getAllPaginated(int start, int count) {
-        try {
-            return queryManager.select(
-                    queryManager.getQuery("applicant.findAllPaginated"),
-                    (rs) -> Applicant.builder()
-                            .id(rs.getLong("id"))
-                            .certificateRating(rs.getBigDecimal("certificate_rating"))
-                            .userId(rs.getLong("user_id"))
-                            .build(),
-                    start,
-                    count
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
+    public List<Applicant> getAllPaginated(int start, int count) throws SQLException {
+        return queryManager.select(
+                queryManager.getQuery("applicant.findAllPaginated"),
+                (rs) -> Applicant.builder()
+                        .id(rs.getLong("id"))
+                        .certificateRating(rs.getBigDecimal("certificate_rating"))
+                        .userId(rs.getLong("user_id"))
+                        .build(),
+                start,
+                count
+        );
     }
 
     @Override
-    public List<Applicant> getAll() {
-        try {
-            return queryManager.select(
-                    queryManager.getQuery("applicant.findAll"),
-                    (rs) -> Applicant.builder()
-                            .id(rs.getLong("id"))
-                            .certificateRating(rs.getBigDecimal("certificate_rating"))
-                            .userId(rs.getLong("user_id"))
-                            .build());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
+    public List<Applicant> getAll() throws SQLException {
+        return queryManager.select(
+                queryManager.getQuery("applicant.findAll"),
+                (rs) -> Applicant.builder()
+                        .id(rs.getLong("id"))
+                        .certificateRating(rs.getBigDecimal("certificate_rating"))
+                        .userId(rs.getLong("user_id"))
+                        .build());
     }
 
     @Override
-    public Optional<Applicant> get(long id) {
-        try {
-            return queryManager.select(
-                    queryManager.getQuery("applicant.findById"),
-                    (rs) -> Applicant.builder()
-                            .id(rs.getLong("id"))
-                            .certificateRating(rs.getBigDecimal("certificate_rating"))
-                            .userId(rs.getLong("user_id"))
-                            .build(),
-                    id).stream().findFirst();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
+    public Optional<Applicant> get(long id) throws SQLException {
+        return queryManager.select(
+                queryManager.getQuery("applicant.findById"),
+                (rs) -> Applicant.builder()
+                        .id(rs.getLong("id"))
+                        .certificateRating(rs.getBigDecimal("certificate_rating"))
+                        .userId(rs.getLong("user_id"))
+                        .build(),
+                id).stream().findFirst();
     }
 
     @Override
-    public boolean delete(long id) {
-        try {
+    public boolean delete(long id) throws SQLException {
 
-            return deleteById(id, queryManager
-                    .getQuery("applicant.deleteById"));
+        return deleteById(id, queryManager
+                .getQuery("applicant.deleteById"));
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
     }
 
     @Override
-    public boolean delete(Applicant entity) {
+    public boolean delete(Applicant entity) throws SQLException {
         return delete(entity.getId());
     }
 
     @Override
-    public Applicant save(Applicant entity) {
-        try {
-            return Applicant.builder()
-                    .id(queryManager.insertAndGetId(
-                            queryManager.getQuery("applicant.create")))
-                    .certificateRating(entity.getCertificateRating())
-                    .userId(entity.getUserId())
-                    .build();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
+    public Applicant save(Applicant entity) throws SQLException {
+        return Applicant.builder()
+                .id(queryManager.insertAndGetId(
+                        queryManager.getQuery("applicant.create")))
+                .certificateRating(entity.getCertificateRating())
+                .userId(entity.getUserId())
+                .build();
     }
 
     @Override
-    public Applicant update(Applicant entity) {
-        try {
-            queryManager.update(
-                    queryManager.getQuery("applicant.update"),
-                    entity.getCertificateRating(),
-                    entity.getUserId(),
-                    entity.getId()
-            );
+    public Applicant update(Applicant entity) throws SQLException {
+        queryManager.update(
+                queryManager.getQuery("applicant.update"),
+                entity.getCertificateRating(),
+                entity.getUserId(),
+                entity.getId()
+        );
 
-            return entity;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
+        return entity;
     }
 }

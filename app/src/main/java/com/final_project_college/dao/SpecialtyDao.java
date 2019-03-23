@@ -2,6 +2,7 @@ package com.final_project_college.dao;
 
 import com.final_project_college.domain.dto.Specialty;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,7 @@ public interface SpecialtyDao extends GenericDao<Specialty> {
 //
 //    Optional<Specialty> removeCollegeFromSpecialty(long collegeId, long specialtyId);
 
-    Optional<Specialty> getSpecialtyByExamId(long examId);
+    Optional<Specialty> getSpecialtyByExamId(long examId) throws SQLException;
 
-    List<Specialty> getSpecialtiesByCollegeId(long collegeId);
+    List<Specialty> getSpecialtiesByCollegeId(long collegeId) throws SQLException;
 }

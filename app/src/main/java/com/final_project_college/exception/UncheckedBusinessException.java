@@ -10,28 +10,28 @@ public class UncheckedBusinessException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    private final ErrorCode code;
+    private final ExceptionCode code;
 
-    public UncheckedBusinessException(ErrorCode code) {
+    public UncheckedBusinessException(ExceptionCode code) {
         this.code = code;
     }
 
-    public UncheckedBusinessException(String message, ErrorCode code) {
+    public UncheckedBusinessException(String message, ExceptionCode code) {
         super(message);
         this.code = code;
     }
 
-    public UncheckedBusinessException(Throwable cause, ErrorCode code) {
+    public UncheckedBusinessException(Throwable cause, ExceptionCode code) {
         super(cause);
         this.code = code;
     }
 
-    public UncheckedBusinessException(String message, Throwable cause, ErrorCode code) {
+    public UncheckedBusinessException(String message, Throwable cause, ExceptionCode code) {
         super(message, cause);
         this.code = code;
     }
 
-    public ErrorCode getCode() {
+    public ExceptionCode getCode() {
         return code;
     }
 }

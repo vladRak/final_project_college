@@ -11,6 +11,8 @@ import java.util.Date;
 
 public class DefaultPreparedStatementParameterSetter implements PreparedStatementParameterSetter {
 
+    private final String ERROR_MESSAGE = "Unknown type of the parameter is found. [param: %s, paramIndex: %s]";
+
     @Override
     public void setParameters(final PreparedStatement statement, final Object... parameters) throws SQLException {
         for (int i = 0, length = parameters.length; i < length; i++) {
@@ -45,8 +47,8 @@ public class DefaultPreparedStatementParameterSetter implements PreparedStatemen
             } else if (parameter instanceof BigDecimal) {
                 statement.setBigDecimal(parameterIndex, (BigDecimal) parameter);
             } else {
-                throw new IllegalArgumentException(String.format(
-                        "Unknown type of the parameter is found. [param: %s, paramIndex: %s]", parameter, parameterIndex));
+                throw new IllegalArgumentException(
+                        String.format(ERROR_MESSAGE, parameter, parameterIndex));
             }
         }
     }

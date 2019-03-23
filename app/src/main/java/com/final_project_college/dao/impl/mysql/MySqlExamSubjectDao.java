@@ -1,9 +1,10 @@
 package com.final_project_college.dao.impl.mysql;
 
-import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.dao.ExamSubjectDao;
+import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.ExamSubject;
 import com.final_project_college.exception.DataAccessException;
+import com.final_project_college.exception.ExceptionCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,30 +21,23 @@ public class MySqlExamSubjectDao extends MySqlAbstractDao implements ExamSubject
     }
 
     @Override
-    public Optional<ExamSubject> getExamSubjectBySchoolExamId(long schoolExamId) {
+    public Optional<ExamSubject> getExamSubjectBySchoolExamId(long schoolExamId) throws SQLException {
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExamSubject> getExamSubjectByEntranceExamId(long entranceExamId) {
+    public Optional<ExamSubject> getExamSubjectByEntranceExamId(long entranceExamId) throws SQLException {
         return Optional.empty();
     }
 
     @Override
-    public int numberOfRows() {
-        try {
+    public int numberOfRows() throws SQLException {
             return getNumberOfRows(queryManager
                     .getQuery("exam_subject.count"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
     }
 
     @Override
-    public List<ExamSubject> getAllPaginated(int start, int count) {
-        try {
+    public List<ExamSubject> getAllPaginated(int start, int count) throws SQLException {
             return queryManager.select(
                     queryManager.getQuery("exam_subject.findAllPaginated"),
                     (rs) -> ExamSubject.builder()
@@ -53,32 +47,20 @@ public class MySqlExamSubjectDao extends MySqlAbstractDao implements ExamSubject
                     start,
                     count
             );
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
     }
 
     @Override
-    public List<ExamSubject> getAll() {
-        try {
+    public List<ExamSubject> getAll() throws SQLException {
             return queryManager.select(
                     queryManager.getQuery("exam_subject.findAll"),
                     (rs) -> ExamSubject.builder()
                             .id(rs.getLong("id"))
                             .subjectName(rs.getString("subject_name"))
                             .build());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
     }
 
     @Override
-    public Optional<ExamSubject> get(long id) {
-        try {
+    public Optional<ExamSubject> get(long id) throws SQLException {
             return queryManager.select(
                     queryManager.getQuery("exam_subject.findById"),
                     (rs) -> ExamSubject.builder()
@@ -86,50 +68,30 @@ public class MySqlExamSubjectDao extends MySqlAbstractDao implements ExamSubject
                             .subjectName(rs.getString("subject_name"))
                             .build(),
                     id).stream().findFirst();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
     }
 
     @Override
-    public boolean delete(long id) {
-        try {
-
+    public boolean delete(long id) throws SQLException {
             return deleteById(id, queryManager
                     .getQuery("exam_subject.delete"));
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
     }
 
     @Override
-    public boolean delete(ExamSubject entity) {
-        return delete(entity.getId());
+    public boolean delete(ExamSubject entity) throws SQLException {
+            return delete(entity.getId());
     }
 
     @Override
-    public ExamSubject save(ExamSubject entity) {
-        try {
+    public ExamSubject save(ExamSubject entity) throws SQLException {
             return ExamSubject.builder()
                     .id(queryManager.insertAndGetId(
                             queryManager.getQuery("exam_subject.create")))
                     .subjectName(entity.getSubjectName())
                     .build();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
     }
 
     @Override
-    public ExamSubject update(ExamSubject entity) {
-        try {
+    public ExamSubject update(ExamSubject entity) throws SQLException {
             queryManager.update(
                     queryManager.getQuery("exam_subject.update"),
                     entity.getSubjectName(),
@@ -137,10 +99,5 @@ public class MySqlExamSubjectDao extends MySqlAbstractDao implements ExamSubject
             );
 
             return entity;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-            throw new DataAccessException(e.getMessage());
-        }
     }
 }
