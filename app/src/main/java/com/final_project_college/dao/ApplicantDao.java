@@ -2,13 +2,12 @@ package com.final_project_college.dao;
 
 import com.final_project_college.domain.dto.Applicant;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public interface ApplicantDao extends GenericDao<Applicant>, FunctionalDao<Applicant> {
+public interface ApplicantDao extends GenericDao<Applicant>, FunctionalGenericDao<Applicant> {
 
-    List<Applicant> getApplicantsByName(String name) throws SQLException;
+    List<Applicant> getApplicantsByName(String name);
 
-    Optional<Applicant> getApplicantBySchoolExamId(long schoolExamId) throws SQLException;
+    Optional<Applicant> getApplicantBySchoolExamId(long schoolExamId);
 }

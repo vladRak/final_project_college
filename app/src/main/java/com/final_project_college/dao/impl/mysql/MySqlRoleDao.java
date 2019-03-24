@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,83 +20,118 @@ public class MySqlRoleDao extends MySqlAbstractDao implements RoleDao {
     }
 
     @Override
-    public Optional<Role> getByRoleName(String roleName) throws SQLException {
+    public Optional<Role> getByRoleName(String roleName) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<Role> getRoleByUserId(long userId) throws SQLException {
+    public Optional<Role> getRoleByUserId(long userId) {
         return Optional.empty();
     }
 
     @Override
-    public int numberOfRows() throws SQLException {
-        return getNumberOfRows(queryManager
-                .getQuery("role.count"));
+    public int numberOfRows() {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("role.count"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return 0;
+        }
     }
 
     @Override
-    public List<Role> getAllPaginated(int start, int count) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("role.findAllPaginated"),
-                (rs) -> Role.builder()
-                        .id(rs.getLong("id"))
-                        .roleName(rs.getString("role_name"))
-                        .build(),
-                start,
-                count
-        );
+    public List<Role> getAllPaginated(int start, int count) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("role.findAllPaginated"),
+                    (rs) -> Role.builder()
+                            .id(rs.getLong("id"))
+                            .roleName(rs.getString("role_name"))
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public List<Role> getAll() throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("role.findAll"),
-                (rs) -> Role.builder()
-                        .id(rs.getLong("id"))
-                        .roleName(rs.getString("role_name"))
-                        .build());
+    public List<Role> getAll() {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("role.findAll"),
+                    (rs) -> Role.builder()
+                            .id(rs.getLong("id"))
+                            .roleName(rs.getString("role_name"))
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public Optional<Role> get(long id) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("role.findById"),
-                (rs) -> Role.builder()
-                        .id(rs.getLong("id"))
-                        .roleName(rs.getString("role_name"))
-                        .build(),
-                id).stream().findFirst();
+    public Optional<Role> get(long id) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("role.findById"),
+                    (rs) -> Role.builder()
+                            .id(rs.getLong("id"))
+                            .roleName(rs.getString("role_name"))
+                            .build(),
+                    id).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public boolean delete(long id) throws SQLException {
-        return deleteById(id, queryManager
-                .getQuery("role.delete"));
+    public boolean delete(long id) {
+        try {
+            return deleteById(id, queryManager
+                    .getQuery("role.delete"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
     }
 
     @Override
-    public boolean delete(Role entity) throws SQLException {
+    public boolean delete(Role entity) {
         return delete(entity.getId());
     }
 
     @Override
-    public Role save(Role entity) throws SQLException {
-        return Role.builder()
-                .id(queryManager.insertAndGetId(
-                        queryManager.getQuery("role.create")))
-                .roleName(entity.getRoleName())
-                .build();
+    public Optional<Role> save(Role entity) {
+        try {
+            return Optional.of(
+                    Role.builder()
+                            .id(queryManager.insertAndGetId(
+                                    queryManager.getQuery("role.create")))
+                            .roleName(entity.getRoleName())
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public Role update(Role entity) throws SQLException {
-        queryManager.update(
-                queryManager.getQuery("role.update"),
-                entity.getRoleName(),
-                entity.getId()
-        );
-
-        return entity;
+    public Optional<Role> update(Role entity) {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("role.update"),
+                    entity.getRoleName(),
+                    entity.getId()
+            );
+            return Optional.of(entity);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 }

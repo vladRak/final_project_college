@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,93 +20,128 @@ public class MySqlSchoolExamDao extends MySqlAbstractDao implements SchoolExamDa
     }
 
     @Override
-    public List<SchoolExam> getSchoolExamsByApplicantId(long applicantId) throws SQLException {
+    public List<SchoolExam> getSchoolExamsByApplicantId(long applicantId) {
         return null;
     }
 
     @Override
-    public List<SchoolExam> getSchoolExamsByExamSubjectId(long examSubjectId) throws SQLException {
+    public List<SchoolExam> getSchoolExamsByExamSubjectId(long examSubjectId) {
         return null;
     }
 
     @Override
-    public int numberOfRows() throws SQLException {
-        return getNumberOfRows(queryManager
-                .getQuery("school_exam.count"));
+    public int numberOfRows() {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("school_exam.count"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return 0;
+        }
     }
 
     @Override
-    public List<SchoolExam> getAllPaginated(int start, int count) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("school_exam.findAllPaginated"),
-                (rs) -> SchoolExam.builder()
-                        .id(rs.getLong("id"))
-                        .rating(rs.getShort("rating"))
-                        .examSubjectId(rs.getLong("exam_subject_id"))
-                        .applicantId(rs.getLong("applicant_id"))
-                        .build(),
-                start,
-                count
-        );
+    public List<SchoolExam> getAllPaginated(int start, int count) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("school_exam.findAllPaginated"),
+                    (rs) -> SchoolExam.builder()
+                            .id(rs.getLong("id"))
+                            .rating(rs.getShort("rating"))
+                            .examSubjectId(rs.getLong("exam_subject_id"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public List<SchoolExam> getAll() throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("school_exam.findAll"),
-                (rs) -> SchoolExam.builder()
-                        .id(rs.getLong("id"))
-                        .rating(rs.getShort("rating"))
-                        .examSubjectId(rs.getLong("exam_subject_id"))
-                        .applicantId(rs.getLong("applicant_id"))
-                        .build());
+    public List<SchoolExam> getAll() {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("school_exam.findAll"),
+                    (rs) -> SchoolExam.builder()
+                            .id(rs.getLong("id"))
+                            .rating(rs.getShort("rating"))
+                            .examSubjectId(rs.getLong("exam_subject_id"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public Optional<SchoolExam> get(long id) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("school_exam.findById"),
-                (rs) -> SchoolExam.builder()
-                        .id(rs.getLong("id"))
-                        .rating(rs.getShort("rating"))
-                        .examSubjectId(rs.getLong("exam_subject_id"))
-                        .applicantId(rs.getLong("applicant_id"))
-                        .build(),
-                id).stream().findFirst();
+    public Optional<SchoolExam> get(long id) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("school_exam.findById"),
+                    (rs) -> SchoolExam.builder()
+                            .id(rs.getLong("id"))
+                            .rating(rs.getShort("rating"))
+                            .examSubjectId(rs.getLong("exam_subject_id"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .build(),
+                    id).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public boolean delete(long id) throws SQLException {
-        return deleteById(id, queryManager
-                .getQuery("school_exam.delete"));
+    public boolean delete(long id) {
+        try {
+            return deleteById(id, queryManager
+                    .getQuery("school_exam.delete"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
     }
 
     @Override
-    public boolean delete(SchoolExam entity) throws SQLException {
+    public boolean delete(SchoolExam entity) {
         return delete(entity.getId());
     }
 
     @Override
-    public SchoolExam save(SchoolExam entity) throws SQLException {
-        return SchoolExam.builder()
-                .id(queryManager.insertAndGetId(
-                        queryManager.getQuery("school_exam.create")))
-                .rating(entity.getRating())
-                .examSubjectId(entity.getExamSubjectId())
-                .applicantId(entity.getApplicantId())
-                .build();
+    public Optional<SchoolExam> save(SchoolExam entity) {
+        try {
+            return Optional.of(
+                    SchoolExam.builder()
+                            .id(queryManager.insertAndGetId(
+                                    queryManager.getQuery("school_exam.create")))
+                            .rating(entity.getRating())
+                            .examSubjectId(entity.getExamSubjectId())
+                            .applicantId(entity.getApplicantId())
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public SchoolExam update(SchoolExam entity) throws SQLException {
-        queryManager.update(
-                queryManager.getQuery("school_exam.update"),
-                entity.getRating(),
-                entity.getExamSubjectId(),
-                entity.getApplicantId(),
-                entity.getId()
-        );
-
-        return entity;
+    public Optional<SchoolExam> update(SchoolExam entity) {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("school_exam.update"),
+                    entity.getRating(),
+                    entity.getExamSubjectId(),
+                    entity.getApplicantId(),
+                    entity.getId()
+            );
+            return Optional.of(entity);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 }

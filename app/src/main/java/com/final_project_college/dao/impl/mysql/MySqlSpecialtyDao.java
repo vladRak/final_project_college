@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,89 +20,124 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     }
 
     @Override
-    public Optional<Specialty> getSpecialtyByExamId(long examId) throws SQLException {
+    public Optional<Specialty> getSpecialtyByExamId(long examId) {
         return Optional.empty();
     }
 
     @Override
-    public int numberOfRows() throws SQLException {
-        return getNumberOfRows(queryManager
-                .getQuery("specialty.count"));
+    public int numberOfRows() {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("specialty.count"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return 0;
+        }
     }
 
     @Override
-    public List<Specialty> getAllPaginated(int start, int count) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("specialty.findAllPaginated"),
-                (rs) -> Specialty.builder()
-                        .id(rs.getLong("id"))
-                        .specialtyName(rs.getString("specialty_name"))
-                        .governmentOrder(rs.getInt("government_order"))
-                        .contractOrder(rs.getInt("contract_order"))
-                        .build(),
-                start,
-                count
-        );
+    public List<Specialty> getAllPaginated(int start, int count) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("specialty.findAllPaginated"),
+                    (rs) -> Specialty.builder()
+                            .id(rs.getLong("id"))
+                            .specialtyName(rs.getString("specialty_name"))
+                            .governmentOrder(rs.getInt("government_order"))
+                            .contractOrder(rs.getInt("contract_order"))
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public List<Specialty> getAll() throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("specialty.findAll"),
-                (rs) -> Specialty.builder()
-                        .id(rs.getLong("id"))
-                        .specialtyName(rs.getString("specialty_name"))
-                        .governmentOrder(rs.getInt("government_order"))
-                        .contractOrder(rs.getInt("contract_order"))
-                        .build());
+    public List<Specialty> getAll() {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("specialty.findAll"),
+                    (rs) -> Specialty.builder()
+                            .id(rs.getLong("id"))
+                            .specialtyName(rs.getString("specialty_name"))
+                            .governmentOrder(rs.getInt("government_order"))
+                            .contractOrder(rs.getInt("contract_order"))
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public Optional<Specialty> get(long id) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("specialty.findById"),
-                (rs) -> Specialty.builder()
-                        .id(rs.getLong("id"))
-                        .specialtyName(rs.getString("specialty_name"))
-                        .governmentOrder(rs.getInt("government_order"))
-                        .contractOrder(rs.getInt("contract_order"))
-                        .build(),
-                id).stream().findFirst();
+    public Optional<Specialty> get(long id) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("specialty.findById"),
+                    (rs) -> Specialty.builder()
+                            .id(rs.getLong("id"))
+                            .specialtyName(rs.getString("specialty_name"))
+                            .governmentOrder(rs.getInt("government_order"))
+                            .contractOrder(rs.getInt("contract_order"))
+                            .build(),
+                    id).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public boolean delete(long id) throws SQLException {
-        return deleteById(id, queryManager
-                .getQuery("specialty.delete"));
+    public boolean delete(long id) {
+        try {
+            return deleteById(id, queryManager
+                    .getQuery("specialty.delete"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
 
     }
 
     @Override
-    public boolean delete(Specialty entity) throws SQLException {
+    public boolean delete(Specialty entity) {
         return delete(entity.getId());
     }
 
     @Override
-    public Specialty save(Specialty entity) throws SQLException {
-        return Specialty.builder()
-                .id(queryManager.insertAndGetId(
-                        queryManager.getQuery("specialty.create")))
-                .specialtyName(entity.getSpecialtyName())
-                .governmentOrder(entity.getGovernmentOrder())
-                .contractOrder(entity.getContractOrder())
-                .build();
+    public Optional<Specialty> save(Specialty entity) {
+        try {
+            return Optional.of(
+                    Specialty.builder()
+                            .id(queryManager.insertAndGetId(
+                                    queryManager.getQuery("specialty.create")))
+                            .specialtyName(entity.getSpecialtyName())
+                            .governmentOrder(entity.getGovernmentOrder())
+                            .contractOrder(entity.getContractOrder())
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public Specialty update(Specialty entity) throws SQLException {
-        queryManager.update(
-                queryManager.getQuery("specialty.update"),
-                entity.getSpecialtyName(),
-                entity.getGovernmentOrder(),
-                entity.getContractOrder(),
-                entity.getId()
-        );
-
-        return entity;
+    public Optional<Specialty> update(Specialty entity) {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("specialty.update"),
+                    entity.getSpecialtyName(),
+                    entity.getGovernmentOrder(),
+                    entity.getContractOrder(),
+                    entity.getId()
+            );
+            return Optional.of(entity);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 }

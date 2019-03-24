@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -20,101 +21,134 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
     }
 
     @Override
-    public Applicant save(Supplier<Applicant> supplier) throws SQLException {
+    public Optional<Applicant> save(Supplier<Applicant> supplier) {
         return save(supplier.get());
     }
 
     @Override
-    public List<Applicant> getApplicantsByName(String name) throws SQLException {
+    public List<Applicant> getApplicantsByName(String name) {
         return null;
     }
 
     @Override
-    public Optional<Applicant> getApplicantBySchoolExamId(long schoolExamId) throws SQLException {
+    public Optional<Applicant> getApplicantBySchoolExamId(long schoolExamId) {
         return Optional.empty();
     }
 
     @Override
-    public int numberOfRows() throws SQLException {
-        return getNumberOfRows(queryManager
-                .getQuery("applicant.count"));
-
+    public int numberOfRows() {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("applicant.count"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return 0;
+        }
     }
 
     @Override
-    public List<Applicant> getAllPaginated(int start, int count) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("applicant.findAllPaginated"),
-                (rs) -> Applicant.builder()
-                        .id(rs.getLong("id"))
-                        .certificateRating(rs.getBigDecimal("certificate_rating"))
-                        .register(rs.getBoolean("register"))
-                        .userId(rs.getLong("user_id"))
-                        .build(),
-                start,
-                count
-        );
+    public List<Applicant> getAllPaginated(int start, int count) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findAllPaginated"),
+                    (rs) -> Applicant.builder()
+                            .id(rs.getLong("id"))
+                            .certificateRating(rs.getBigDecimal("certificate_rating"))
+                            .register(rs.getBoolean("register"))
+                            .userId(rs.getLong("user_id"))
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public List<Applicant> getAll() throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("applicant.findAll"),
-                (rs) -> Applicant.builder()
-                        .id(rs.getLong("id"))
-                        .certificateRating(rs.getBigDecimal("certificate_rating"))
-                        .register(rs.getBoolean("register"))
-                        .userId(rs.getLong("user_id"))
-                        .build());
+    public List<Applicant> getAll() {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findAll"),
+                    (rs) -> Applicant.builder()
+                            .id(rs.getLong("id"))
+                            .certificateRating(rs.getBigDecimal("certificate_rating"))
+                            .register(rs.getBoolean("register"))
+                            .userId(rs.getLong("user_id"))
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public Optional<Applicant> get(long id) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("applicant.findById"),
-                (rs) -> Applicant.builder()
-                        .id(rs.getLong("id"))
-                        .certificateRating(rs.getBigDecimal("certificate_rating"))
-                        .register(rs.getBoolean("register"))
-                        .userId(rs.getLong("user_id"))
-                        .build(),
-                id).stream().findFirst();
+    public Optional<Applicant> get(long id) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findById"),
+                    (rs) -> Applicant.builder()
+                            .id(rs.getLong("id"))
+                            .certificateRating(rs.getBigDecimal("certificate_rating"))
+                            .register(rs.getBoolean("register"))
+                            .userId(rs.getLong("user_id"))
+                            .build(),
+                    id).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public boolean delete(long id) throws SQLException {
-
-        return deleteById(id, queryManager
-                .getQuery("applicant.deleteById"));
-
+    public boolean delete(long id) {
+        try {
+            return deleteById(id, queryManager
+                    .getQuery("applicant.deleteById"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
     }
 
     @Override
-    public boolean delete(Applicant entity) throws SQLException {
+    public boolean delete(Applicant entity) {
         return delete(entity.getId());
     }
 
     @Override
-    public Applicant save(Applicant entity) throws SQLException {
-        return Applicant.builder()
-                .id(queryManager.insertAndGetId(
-                        queryManager.getQuery("applicant.create")))
-                .certificateRating(entity.getCertificateRating())
-                .register(entity.isRegister())
-                .userId(entity.getUserId())
-                .build();
+    public Optional<Applicant> save(Applicant entity) {
+        try {
+            return Optional.of(
+                    Applicant.builder()
+                            .id(queryManager.insertAndGetId(
+                                    queryManager.getQuery("applicant.create")))
+                            .certificateRating(entity.getCertificateRating())
+                            .register(entity.isRegister())
+                            .userId(entity.getUserId())
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public Applicant update(Applicant entity) throws SQLException {
-        queryManager.update(
-                queryManager.getQuery("applicant.update"),
-                entity.getCertificateRating(),
-                entity.isRegister(),
-                entity.getUserId(),
-                entity.getId()
-        );
+    public Optional<Applicant> update(Applicant entity) {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("applicant.update"),
+                    entity.getCertificateRating(),
+                    entity.isRegister(),
+                    entity.getUserId(),
+                    entity.getId()
+            );
 
-        return entity;
+            return Optional.of(entity);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 }

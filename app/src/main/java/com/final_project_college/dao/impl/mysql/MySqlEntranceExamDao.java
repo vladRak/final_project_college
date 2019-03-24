@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,93 +20,128 @@ public class MySqlEntranceExamDao extends MySqlAbstractDao implements EntranceEx
     }
 
     @Override
-    public List<EntranceExam> getEntranceExamsBySpecialtyId(long specialtyId) throws SQLException {
+    public List<EntranceExam> getEntranceExamsBySpecialtyId(long specialtyId) {
         return null;
     }
 
     @Override
-    public List<EntranceExam> getEntranceExamsByExamSubjectId(long examSubjectId) throws SQLException {
+    public List<EntranceExam> getEntranceExamsByExamSubjectId(long examSubjectId) {
         return null;
     }
 
     @Override
-    public int numberOfRows() throws SQLException {
-        return getNumberOfRows(queryManager
-                .getQuery("entrance_exam.count"));
+    public int numberOfRows() {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("entrance_exam.count"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return 0;
+        }
     }
 
     @Override
-    public List<EntranceExam> getAllPaginated(int start, int count) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("entrance_exam.findAllPaginated"),
-                (rs) -> EntranceExam.builder()
-                        .id(rs.getLong("id"))
-                        .minRating(rs.getShort("min_rating"))
-                        .examSubjectId(rs.getLong("exam_subject_id"))
-                        .specialtyId(rs.getLong("specialty_id"))
-                        .build(),
-                start,
-                count
-        );
+    public List<EntranceExam> getAllPaginated(int start, int count) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("entrance_exam.findAllPaginated"),
+                    (rs) -> EntranceExam.builder()
+                            .id(rs.getLong("id"))
+                            .minRating(rs.getShort("min_rating"))
+                            .examSubjectId(rs.getLong("exam_subject_id"))
+                            .specialtyId(rs.getLong("specialty_id"))
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public List<EntranceExam> getAll() throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("entrance_exam.findAll"),
-                (rs) -> EntranceExam.builder()
-                        .id(rs.getLong("id"))
-                        .minRating(rs.getShort("min_rating"))
-                        .examSubjectId(rs.getLong("exam_subject_id"))
-                        .specialtyId(rs.getLong("specialty_id"))
-                        .build());
+    public List<EntranceExam> getAll() {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("entrance_exam.findAll"),
+                    (rs) -> EntranceExam.builder()
+                            .id(rs.getLong("id"))
+                            .minRating(rs.getShort("min_rating"))
+                            .examSubjectId(rs.getLong("exam_subject_id"))
+                            .specialtyId(rs.getLong("specialty_id"))
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public Optional<EntranceExam> get(long id) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("entrance_exam.findById"),
-                (rs) -> EntranceExam.builder()
-                        .id(rs.getLong("id"))
-                        .minRating(rs.getShort("min_rating"))
-                        .examSubjectId(rs.getLong("exam_subject_id"))
-                        .specialtyId(rs.getLong("specialty_id"))
-                        .build(),
-                id).stream().findFirst();
+    public Optional<EntranceExam> get(long id) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("entrance_exam.findById"),
+                    (rs) -> EntranceExam.builder()
+                            .id(rs.getLong("id"))
+                            .minRating(rs.getShort("min_rating"))
+                            .examSubjectId(rs.getLong("exam_subject_id"))
+                            .specialtyId(rs.getLong("specialty_id"))
+                            .build(),
+                    id).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public boolean delete(long id) throws SQLException {
-        return deleteById(id, queryManager
-                .getQuery("entrance_exam.delete"));
+    public boolean delete(long id) {
+        try {
+            return deleteById(id, queryManager
+                    .getQuery("entrance_exam.delete"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
     }
 
     @Override
-    public boolean delete(EntranceExam entity) throws SQLException {
+    public boolean delete(EntranceExam entity) {
         return delete(entity.getId());
     }
 
     @Override
-    public EntranceExam save(EntranceExam entity) throws SQLException {
-        return EntranceExam.builder()
-                .id(queryManager.insertAndGetId(
-                        queryManager.getQuery("entrance_exam.create")))
-                .minRating(entity.getMinRating())
-                .examSubjectId(entity.getExamSubjectId())
-                .specialtyId(entity.getSpecialtyId())
-                .build();
+    public Optional<EntranceExam> save(EntranceExam entity) {
+        try {
+            return Optional.of(
+                    EntranceExam.builder()
+                            .id(queryManager.insertAndGetId(
+                                    queryManager.getQuery("entrance_exam.create")))
+                            .minRating(entity.getMinRating())
+                            .examSubjectId(entity.getExamSubjectId())
+                            .specialtyId(entity.getSpecialtyId())
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public EntranceExam update(EntranceExam entity) throws SQLException {
-        queryManager.update(
-                queryManager.getQuery("entrance_exam.update"),
-                entity.getMinRating(),
-                entity.getExamSubjectId(),
-                entity.getSpecialtyId(),
-                entity.getId()
-        );
-
-        return entity;
+    public Optional<EntranceExam> update(EntranceExam entity) {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("entrance_exam.update"),
+                    entity.getMinRating(),
+                    entity.getExamSubjectId(),
+                    entity.getSpecialtyId(),
+                    entity.getId()
+            );
+            return Optional.of(entity);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 }

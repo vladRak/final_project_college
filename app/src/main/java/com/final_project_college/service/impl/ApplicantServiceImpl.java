@@ -38,10 +38,12 @@ public class ApplicantServiceImpl extends AbstractService implements ApplicantSe
 
             daoFactory
                     .getApplicantDao(connection)
-                    .save((a) -> {a})
-                            .setUserId(daoFactory
-                                    .getUserDao(connection)
-                                    .save(user).getId()));
+                    .save((a) -> {
+                        a
+                    })
+                    .setUserId(daoFactory
+                            .getUserDao(connection)
+                            .save(user).getId()));
 
 //            daoFactory
 //                    .getApplicantDao(connection)
@@ -148,7 +150,8 @@ public class ApplicantServiceImpl extends AbstractService implements ApplicantSe
 
             return daoFactory
                     .getApplicantDao(connection)
-                    .save(validateApplicant(entity));
+                    .save(validateApplicant(entity))
+                    .orElseThrow(() -> new SystemException(SystemCode.SQL_EXCEPTION));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -163,7 +166,8 @@ public class ApplicantServiceImpl extends AbstractService implements ApplicantSe
 
             return daoFactory
                     .getApplicantDao(connection)
-                    .update(validateApplicant(entity));
+                    .update(validateApplicant(entity))
+                    .orElseThrow(() -> new SystemException(SystemCode.SQL_EXCEPTION));
 
         } catch (SQLException e) {
             e.printStackTrace();

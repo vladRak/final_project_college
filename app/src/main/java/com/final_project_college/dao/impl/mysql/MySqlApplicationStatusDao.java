@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,73 +20,108 @@ public class MySqlApplicationStatusDao extends MySqlAbstractDao implements Appli
     }
 
     @Override
-    public int numberOfRows() throws SQLException {
-        return getNumberOfRows(queryManager
-                .getQuery("application_status.count"));
+    public int numberOfRows() {
+        try {
+            return getNumberOfRows(queryManager
+                    .getQuery("application_status.count"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return 0;
+        }
     }
 
     @Override
-    public List<ApplicationStatus> getAllPaginated(int start, int count) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("application_status.findAllPaginated"),
-                (rs) -> ApplicationStatus.builder()
-                        .id(rs.getLong("id"))
-                        .statusName("status_name")
-                        .build(),
-                start,
-                count
-        );
+    public List<ApplicationStatus> getAllPaginated(int start, int count) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("application_status.findAllPaginated"),
+                    (rs) -> ApplicationStatus.builder()
+                            .id(rs.getLong("id"))
+                            .statusName("status_name")
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public List<ApplicationStatus> getAll() throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("application_status.findAll"),
-                (rs) -> ApplicationStatus.builder()
-                        .id(rs.getLong("id"))
-                        .statusName("status_name")
-                        .build());
+    public List<ApplicationStatus> getAll() {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("application_status.findAll"),
+                    (rs) -> ApplicationStatus.builder()
+                            .id(rs.getLong("id"))
+                            .statusName("status_name")
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
-    public Optional<ApplicationStatus> get(long id) throws SQLException {
-        return queryManager.select(
-                queryManager.getQuery("application_status.findById"),
-                (rs) -> ApplicationStatus.builder()
-                        .id(rs.getLong("id"))
-                        .statusName("status_name")
-                        .build(),
-                id).stream().findFirst();
+    public Optional<ApplicationStatus> get(long id) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("application_status.findById"),
+                    (rs) -> ApplicationStatus.builder()
+                            .id(rs.getLong("id"))
+                            .statusName("status_name")
+                            .build(),
+                    id).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public boolean delete(long id) throws SQLException {
-        return deleteById(id, queryManager
-                .getQuery("application_status.deleteById"));
+    public boolean delete(long id) {
+        try {
+            return deleteById(id, queryManager
+                    .getQuery("application_status.deleteById"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
     }
 
     @Override
-    public boolean delete(ApplicationStatus entity) throws SQLException {
+    public boolean delete(ApplicationStatus entity) {
         return delete(entity.getId());
     }
 
     @Override
-    public ApplicationStatus save(ApplicationStatus entity) throws SQLException {
-        return ApplicationStatus.builder()
-                .id(queryManager.insertAndGetId(
-                        queryManager.getQuery("application_status.create")))
-                .statusName(entity.getStatusName())
-                .build();
+    public Optional<ApplicationStatus> save(ApplicationStatus entity) {
+        try {
+            return Optional.of(
+                    ApplicationStatus.builder()
+                            .id(queryManager.insertAndGetId(
+                                    queryManager.getQuery("application_status.create")))
+                            .statusName(entity.getStatusName())
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public ApplicationStatus update(ApplicationStatus entity) throws SQLException {
-        queryManager.update(
-                queryManager.getQuery("application_status.update"),
-                entity.getStatusName(),
-                entity.getId()
-        );
-
-        return entity;
+    public Optional<ApplicationStatus> update(ApplicationStatus entity) {
+        try {
+            queryManager.update(
+                    queryManager.getQuery("application_status.update"),
+                    entity.getStatusName(),
+                    entity.getId()
+            );
+            return Optional.of(entity);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 }
