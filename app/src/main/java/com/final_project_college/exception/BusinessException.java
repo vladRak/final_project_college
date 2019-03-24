@@ -1,37 +1,37 @@
 package com.final_project_college.exception;
 
 /**
- * The BusinessException wraps all checked standard Java exception
+ * The BusinessException wraps all unchecked standard Java exception
  * and enriches them with a custom error code.
  *
  * @author vladRak
  */
-public class BusinessException extends Exception {
+public class BusinessException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    private final ExceptionCode code;
+    private final BusinessCode code;
 
-    public BusinessException(ExceptionCode code) {
+    public BusinessException(BusinessCode code) {
         this.code = code;
     }
 
-    public BusinessException(String message, ExceptionCode code) {
+    public BusinessException(String message, BusinessCode code) {
         super(message);
         this.code = code;
     }
 
-    public BusinessException(Throwable cause, ExceptionCode code) {
+    public BusinessException(Throwable cause, BusinessCode code) {
         super(cause);
         this.code = code;
     }
 
-    public BusinessException(String message, Throwable cause, ExceptionCode code) {
+    public BusinessException(String message, Throwable cause, BusinessCode code) {
         super(message, cause);
         this.code = code;
     }
 
-    public ExceptionCode getCode() {
+    public BusinessCode getCode() {
         return code;
     }
 }

@@ -3,8 +3,6 @@ package com.final_project_college.dao.impl.mysql;
 import com.final_project_college.dao.ExamSubjectDao;
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.ExamSubject;
-import com.final_project_college.exception.DataAccessException;
-import com.final_project_college.exception.ExceptionCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

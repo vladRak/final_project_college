@@ -1,6 +1,5 @@
 package com.final_project_college.util.external_config;
 
-import com.final_project_college.exception.ExternalConfigException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

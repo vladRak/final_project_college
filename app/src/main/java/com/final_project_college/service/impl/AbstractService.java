@@ -2,7 +2,6 @@ package com.final_project_college.service.impl;
 
 import com.final_project_college.dao.AbstractDaoFactory;
 import com.final_project_college.dao.jdbc.TransactionManager;
-import com.final_project_college.exception.InvalidInputDataException;
 import com.final_project_college.util.ContextMapper;
 
 import javax.servlet.http.HttpServletRequest;

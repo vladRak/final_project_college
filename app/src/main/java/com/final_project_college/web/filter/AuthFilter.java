@@ -1,6 +1,5 @@
 package com.final_project_college.web.filter;
 
-import com.final_project_college.exception.VerificationException;
 import com.final_project_college.web.listener.SessionCounterListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

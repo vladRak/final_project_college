@@ -24,17 +24,12 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     }
 
     @Override
+    public Optional<User> getByEmailAndPassword(String email, String password) throws SQLException {
+        return Optional.empty();
+    }
+
+    @Override
     public List<User> getUnverifiedUsers() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public List<User> getUsersByPrivilegeId(long privilegeId) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public List<User> getUnverifiedUsersByPrivilegeId(long privilegeId) throws SQLException {
         return null;
     }
 

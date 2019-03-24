@@ -10,14 +10,11 @@ public interface UserDao extends GenericDao<User> {
 
     Optional<User> getByEmail(String email) throws SQLException;
 
+    Optional<User> getByEmailAndPassword(String email, String password) throws SQLException;
+
     List<User> getUnverifiedUsers() throws SQLException;
-
-    List<User> getUsersByPrivilegeId(long privilegeId) throws SQLException;
-
-    List<User> getUnverifiedUsersByPrivilegeId(long privilegeId) throws SQLException;
 
     List<User> getUsersByRoleId(long roleId) throws SQLException;
 
     List<User> getUnverifiedUsersByRoleId(long roleId) throws SQLException;
-
 }

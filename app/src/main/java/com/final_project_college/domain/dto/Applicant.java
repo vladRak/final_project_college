@@ -10,14 +10,16 @@ import java.math.BigDecimal;
 public class Applicant extends Entity {
 
     private BigDecimal certificateRating;
+    private boolean register;
     private long userId;
 
     @Builder
     private Applicant(long id,
-                     BigDecimal certificateRating,
-                     long userId) {
+                      BigDecimal certificateRating,
+                      boolean register, long userId) {
         super(id);
         this.certificateRating = certificateRating;
+        this.register = register;
         this.userId = userId;
     }
 }

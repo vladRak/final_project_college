@@ -24,11 +24,6 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
     }
 
     @Override
-    public List<Applicant> getApplicantsByCollegeId(long collegeId) throws SQLException {
-        return null;
-    }
-
-    @Override
     public Optional<Applicant> getApplicantBySchoolExamId(long schoolExamId) throws SQLException {
         return Optional.empty();
     }
@@ -47,6 +42,7 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
                 (rs) -> Applicant.builder()
                         .id(rs.getLong("id"))
                         .certificateRating(rs.getBigDecimal("certificate_rating"))
+                        .register(rs.getBoolean("register"))
                         .userId(rs.getLong("user_id"))
                         .build(),
                 start,
@@ -61,6 +57,7 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
                 (rs) -> Applicant.builder()
                         .id(rs.getLong("id"))
                         .certificateRating(rs.getBigDecimal("certificate_rating"))
+                        .register(rs.getBoolean("register"))
                         .userId(rs.getLong("user_id"))
                         .build());
     }
@@ -72,6 +69,7 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
                 (rs) -> Applicant.builder()
                         .id(rs.getLong("id"))
                         .certificateRating(rs.getBigDecimal("certificate_rating"))
+                        .register(rs.getBoolean("register"))
                         .userId(rs.getLong("user_id"))
                         .build(),
                 id).stream().findFirst();
@@ -96,6 +94,7 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
                 .id(queryManager.insertAndGetId(
                         queryManager.getQuery("applicant.create")))
                 .certificateRating(entity.getCertificateRating())
+                .register(entity.isRegister())
                 .userId(entity.getUserId())
                 .build();
     }
@@ -105,6 +104,7 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
         queryManager.update(
                 queryManager.getQuery("applicant.update"),
                 entity.getCertificateRating(),
+                entity.isRegister(),
                 entity.getUserId(),
                 entity.getId()
         );

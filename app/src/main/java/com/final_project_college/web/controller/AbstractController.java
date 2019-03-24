@@ -1,6 +1,8 @@
 package com.final_project_college.web.controller;
 
 import com.final_project_college.annotation.Controller;
+import com.final_project_college.service.impl.ServiceFactory;
+import com.final_project_college.util.MapHelper;
 import com.final_project_college.util.PagePathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +14,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Map;
+import java.util.stream.Collector;
 
 public abstract class AbstractController implements Controller {
     protected ServletContext context;
     protected HttpServletRequest request;
     protected HttpServletResponse response;
     protected HttpSession session;
+    protected ServiceFactory serviceFactory;
     protected static final Logger logger = LoggerFactory.getLogger(AbstractController.class);
 
     public void init(
@@ -28,6 +33,7 @@ public abstract class AbstractController implements Controller {
         this.request = servletRequest;
         this.response = servletResponse;
         this.session = request.getSession();
+        serviceFactory = (ServiceFactory) context.getAttribute("serviceFactory");
     }
 
     public abstract void process() throws ServletException, IOException;
@@ -59,5 +65,18 @@ public abstract class AbstractController implements Controller {
             start = (currentPage - 1) * recordsPerPage;
         }
         return start;
+    }
+
+    protected void sessionSetAttributes(Map<String, Object> attributes) {
+        attributes.forEach((key, value)->
+                        session.setAttribute(key,value));
+    }
+
+    protected Map.Entry<String,Object> attribute (String key, Object value){
+        return MapHelper.entry(key, value);
+    }
+
+    protected static Collector<Map.Entry<String, Object>, ?, Map<String, Object>> attributesMap(){
+        return MapHelper.entryToMap();
     }
 }

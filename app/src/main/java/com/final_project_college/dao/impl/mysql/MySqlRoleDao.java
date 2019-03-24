@@ -19,23 +19,8 @@ public class MySqlRoleDao extends MySqlAbstractDao implements RoleDao {
     }
 
     @Override
-    public Optional<Role> addPrivilegeToRole(long privilegeId, long roleId) throws SQLException {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Role> removePrivilegeFromRole(long privilegeId, long roleId) throws SQLException {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<Role> getByRoleName(String roleName) throws SQLException {
         return Optional.empty();
-    }
-
-    @Override
-    public List<Role> getRolesByPrivilegeId(long privilegeId) throws SQLException {
-        return null;
     }
 
     @Override

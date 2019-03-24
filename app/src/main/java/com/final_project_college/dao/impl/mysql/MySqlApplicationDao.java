@@ -27,17 +27,11 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                         .contract(rs.getBoolean("contract"))
                         .created(rs.getTimestamp("created"))
                         .applicantId(rs.getLong("applicant_id"))
-                        .collegeId(rs.getLong("college_id"))
                         .specialtyId(rs.getLong("specialty_id"))
                         .statusId(rs.getLong("status_id"))
                         .build(),
                 applicantId
         );
-    }
-
-    @Override
-    public List<Application> getApplicationsByCollegeId(long collegeId) throws SQLException {
-        return null;
     }
 
     @Override
@@ -67,7 +61,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                         .contract(rs.getBoolean("contract"))
                         .created(rs.getTimestamp("created"))
                         .applicantId(rs.getLong("applicant_id"))
-                        .collegeId(rs.getLong("college_id"))
                         .specialtyId(rs.getLong("specialty_id"))
                         .statusId(rs.getLong("status_id"))
                         .build(),
@@ -85,7 +78,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                         .contract(rs.getBoolean("contract"))
                         .created(rs.getTimestamp("created"))
                         .applicantId(rs.getLong("applicant_id"))
-                        .collegeId(rs.getLong("college_id"))
                         .specialtyId(rs.getLong("specialty_id"))
                         .statusId(rs.getLong("status_id"))
                         .build());
@@ -100,7 +92,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                         .contract(rs.getBoolean("contract"))
                         .created(rs.getTimestamp("created"))
                         .applicantId(rs.getLong("applicant_id"))
-                        .collegeId(rs.getLong("college_id"))
                         .specialtyId(rs.getLong("specialty_id"))
                         .statusId(rs.getLong("status_id"))
                         .build(),
@@ -126,7 +117,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                 .contract(entity.isContract())
                 .created(entity.getCreated())
                 .applicantId(entity.getApplicantId())
-                .collegeId(entity.getCollegeId())
                 .specialtyId(entity.getSpecialtyId())
                 .statusId(entity.getStatusId())
                 .build();
@@ -139,7 +129,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                 entity.isContract(),
                 entity.getCreated(),
                 entity.getApplicantId(),
-                entity.getCollegeId(),
                 entity.getSpecialtyId(),
                 entity.getStatusId(),
                 entity.getId()

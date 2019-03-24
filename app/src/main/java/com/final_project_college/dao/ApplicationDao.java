@@ -9,8 +9,6 @@ public interface ApplicationDao extends GenericDao<Application> {
 
     List<Application> getApplicationsByApplicantId(long applicantId) throws SQLException;
 
-    List<Application> getApplicationsByCollegeId(long collegeId) throws SQLException;
-
     List<Application> getApplicationsBySpecialtyId(long specialtyId) throws SQLException;
 
     List<Application> getApplicationsByStatusId(long statusId) throws SQLException;

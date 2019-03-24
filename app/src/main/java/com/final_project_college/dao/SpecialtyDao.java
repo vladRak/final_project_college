@@ -8,11 +8,5 @@ import java.util.Optional;
 
 public interface SpecialtyDao extends GenericDao<Specialty> {
 
-//    Optional<Specialty> addCollegeToSpecialty(long collegeId, long specialtyId);
-//
-//    Optional<Specialty> removeCollegeFromSpecialty(long collegeId, long specialtyId);
-
     Optional<Specialty> getSpecialtyByExamId(long examId) throws SQLException;
-
-    List<Specialty> getSpecialtiesByCollegeId(long collegeId) throws SQLException;
 }

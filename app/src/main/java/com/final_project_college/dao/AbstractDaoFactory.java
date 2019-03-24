@@ -10,15 +10,9 @@ public interface AbstractDaoFactory {
 
     ApplicationStatusDao getApplicationStatusDao(ConnectionWrapper connection);
 
-    CollegeDao getCollegeDao(ConnectionWrapper connection);
-
-    CollegeSpecialtyDao getCollegeSpecialtyDao(ConnectionWrapper connection);
-
     EntranceExamDao getEntranceExamDao(ConnectionWrapper connection);
 
     ExamSubjectDao getExamSubjectDao(ConnectionWrapper connection);
-
-    PrivilegeDao getPrivilegeDao(ConnectionWrapper connection);
 
     RoleDao getRoleDao(ConnectionWrapper connection);
 

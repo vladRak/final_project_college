@@ -24,11 +24,6 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     }
 
     @Override
-    public List<Specialty> getSpecialtiesByCollegeId(long collegeId) throws SQLException {
-        return null;
-    }
-
-    @Override
     public int numberOfRows() throws SQLException {
         return getNumberOfRows(queryManager
                 .getQuery("specialty.count"));
@@ -41,6 +36,8 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
                 (rs) -> Specialty.builder()
                         .id(rs.getLong("id"))
                         .specialtyName(rs.getString("specialty_name"))
+                        .governmentOrder(rs.getInt("government_order"))
+                        .contractOrder(rs.getInt("contract_order"))
                         .build(),
                 start,
                 count
@@ -54,6 +51,8 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
                 (rs) -> Specialty.builder()
                         .id(rs.getLong("id"))
                         .specialtyName(rs.getString("specialty_name"))
+                        .governmentOrder(rs.getInt("government_order"))
+                        .contractOrder(rs.getInt("contract_order"))
                         .build());
     }
 
@@ -64,6 +63,8 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
                 (rs) -> Specialty.builder()
                         .id(rs.getLong("id"))
                         .specialtyName(rs.getString("specialty_name"))
+                        .governmentOrder(rs.getInt("government_order"))
+                        .contractOrder(rs.getInt("contract_order"))
                         .build(),
                 id).stream().findFirst();
     }
@@ -86,6 +87,8 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
                 .id(queryManager.insertAndGetId(
                         queryManager.getQuery("specialty.create")))
                 .specialtyName(entity.getSpecialtyName())
+                .governmentOrder(entity.getGovernmentOrder())
+                .contractOrder(entity.getContractOrder())
                 .build();
     }
 
@@ -94,6 +97,8 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
         queryManager.update(
                 queryManager.getQuery("specialty.update"),
                 entity.getSpecialtyName(),
+                entity.getGovernmentOrder(),
+                entity.getContractOrder(),
                 entity.getId()
         );
 

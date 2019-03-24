@@ -1,25 +1,22 @@
 package com.final_project_college.service;
 
-import com.final_project_college.exception.BusinessException;
+import com.final_project_college.exception.SystemException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface GenericService<T> {
 
-    int numberOfRows() throws BusinessException;
+    int numberOfRows() throws SystemException;
 
-    List<T> getAllPaginated(int start, int count) throws BusinessException;
+    List<T> getAllPaginated(int start, int count) throws SystemException;
 
-    List<T> getAll();
+    List<T> getAll() throws SystemException;
 
-    Optional<T> get(long id);
+    T get(long id) throws SystemException;
 
-    boolean delete(long id);
+    boolean delete(long id) throws SystemException;
 
-    boolean delete(T entity);
+    T save(T entity) throws SystemException;
 
-    T save(T entity);
-
-    T update(T entity);
+    T update(T entity) throws SystemException;
 }

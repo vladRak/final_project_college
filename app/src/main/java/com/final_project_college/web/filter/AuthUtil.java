@@ -3,7 +3,6 @@ package com.final_project_college.web.filter;
 import com.final_project_college.dao.AbstractDaoFactory;
 import com.final_project_college.domain.dto.Role;
 import com.final_project_college.domain.dto.User;
-import com.final_project_college.exception.VerificationException;
 import com.final_project_college.service.RoleService;
 import com.final_project_college.service.UserService;
 import com.final_project_college.service.impl.ServiceFactory;

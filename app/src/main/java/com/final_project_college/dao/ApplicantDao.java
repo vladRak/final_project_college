@@ -10,7 +10,5 @@ public interface ApplicantDao extends GenericDao<Applicant> {
 
     List<Applicant> getApplicantsByName(String name) throws SQLException;
 
-    List<Applicant> getApplicantsByCollegeId(long collegeId) throws SQLException;
-
     Optional<Applicant> getApplicantBySchoolExamId(long schoolExamId) throws SQLException;
 }
