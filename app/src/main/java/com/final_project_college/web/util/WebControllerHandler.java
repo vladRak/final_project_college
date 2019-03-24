@@ -1,7 +1,8 @@
 package com.final_project_college.web.util;
 
 import com.final_project_college.annotation.WebController;
-import com.final_project_college.annotation.exception.WebControllerException;
+import com.final_project_college.annotation.exception.AnnotationException;
+import com.final_project_college.annotation.exception.AnnotationExceptionCode;
 import org.reflections.Reflections;
 
 import java.util.*;
@@ -28,9 +29,9 @@ public enum WebControllerHandler {
         commands = Collections.unmodifiableMap(new LinkedHashMap<>(var));
     }
 
-    public Class<?> getController(String command) throws WebControllerException {
-        Class clazz = commands.get(command);
-        if (nonNull(clazz)) return clazz;
-        else throw new WebControllerException("Unsupported controller: " + command);
+    public Class<?> getController(String command) {
+        return Optional.of(commands.get(command)).orElseThrow(() ->
+                new AnnotationException("Unsupported controller: " + command,
+                        AnnotationExceptionCode.WEB_CONTROLLER_EXCEPTION));
     }
 }

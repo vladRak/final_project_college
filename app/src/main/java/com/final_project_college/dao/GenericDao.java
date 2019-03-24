@@ -6,19 +6,35 @@ import java.util.Optional;
 
 public interface GenericDao<T> {
 
-    int numberOfRows() throws SQLException;
+//    int numberOfRows() throws SQLException;
+//
+//    List<T> getAllPaginated(int start, int count) throws SQLException;
+//
+//    List<T> getAll() throws SQLException;
+//
+//    Optional<T> get(long id) throws SQLException;
+//
+//    boolean delete(long id) throws SQLException;
+//
+//    boolean delete(T entity) throws SQLException;
+//
+//    T save(T entity) throws SQLException;
+//
+//    T update(T entity) throws SQLException;
 
-    List<T> getAllPaginated(int start, int count) throws SQLException;
+    int numberOfRows();
 
-    List<T> getAll() throws SQLException;
+    List<T> getAllPaginated(int start, int count);
 
-    Optional<T> get(long id) throws SQLException;
+    List<T> getAll();
 
-    boolean delete(long id) throws SQLException;
+    Optional<T> get(long id);
 
-    boolean delete(T entity) throws SQLException;
+    boolean delete(long id);
 
-    T save(T entity) throws SQLException;
+    boolean delete(T entity);
 
-    T update(T entity) throws SQLException;
+    T save(T entity);
+
+    T update(T entity);
 }

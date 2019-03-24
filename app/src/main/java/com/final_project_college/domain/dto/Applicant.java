@@ -5,6 +5,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Getter
+@Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class Applicant extends Entity {

@@ -2,9 +2,6 @@ package com.final_project_college.web.servlet;
 
 import com.final_project_college.annotation.Controller;
 import com.final_project_college.annotation.exception.AnnotationException;
-import com.final_project_college.annotation.exception.AnnotationExceptionCode;
-import com.final_project_college.annotation.exception.CredentialsException;
-import com.final_project_college.annotation.exception.WebControllerException;
 import com.final_project_college.util.ContextMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,14 +45,16 @@ public class DispatcherServlet extends HttpServlet {
             controller.init(getServletContext(), request, response);
             controller.process();
 
-        } catch (WebControllerException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-        } catch (CredentialsException e) {
-            logger.error("IP: " + getClientIp(request)+ " " + e.getMessage());
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } catch (AnnotationException e) {
+            switch (e.getCode()) {
+                case CREDENTIALS_EXCEPTION:
+                    logger.error("IP: " + getClientIp(request) + " " + e.getMessage());
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    break;
+                case WEB_CONTROLLER_EXCEPTION:
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    break;
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao {
 
@@ -16,6 +17,11 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
 
     public MySqlApplicantDao(ConnectionWrapper connection) {
         super(connection);
+    }
+
+    @Override
+    public Applicant save(Supplier<Applicant> supplier) throws SQLException {
+        return save(supplier.get());
     }
 
     @Override

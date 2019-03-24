@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
 
@@ -32,7 +33,8 @@ public abstract class AbstractController implements Controller {
         this.context = servletContext;
         this.request = servletRequest;
         this.response = servletResponse;
-        this.session = request.getSession();
+//        this.session = request.getSession();
+        this.session = request.getSession(false);
         serviceFactory = (ServiceFactory) context.getAttribute("serviceFactory");
     }
 
@@ -68,15 +70,26 @@ public abstract class AbstractController implements Controller {
     }
 
     protected void sessionSetAttributes(Map<String, Object> attributes) {
-        attributes.forEach((key, value)->
-                        session.setAttribute(key,value));
+        attributes.forEach((key, value) ->
+                session.setAttribute(key, value));
     }
 
-    protected Map.Entry<String,Object> attribute (String key, Object value){
+    protected void sessionRemoveAttributes(List<String> attributes) {
+        attributes.forEach((attr) ->
+                session.removeAttribute(attr));
+    }
+
+    protected Map.Entry<String, Object> attribute(String key, Object value) {
         return MapHelper.entry(key, value);
     }
 
-    protected static Collector<Map.Entry<String, Object>, ?, Map<String, Object>> attributesMap(){
+    protected static Collector<Map.Entry<String, Object>, ?, Map<String, Object>> attributesMap() {
         return MapHelper.entryToMap();
     }
+
+//    protected long getValidId(HttpServletRequest request) throws InvalidInputDataException {
+//        String id = request.getParameter("id");
+//        if (isValidString(id)) return Long.parseLong(id);
+//        else throw new InvalidInputDataException("Invalid ID");
+//    }
 }

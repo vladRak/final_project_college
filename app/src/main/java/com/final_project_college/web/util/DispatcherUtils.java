@@ -1,7 +1,6 @@
 package com.final_project_college.web.util;
 
 import com.final_project_college.annotation.Controller;
-import com.final_project_college.annotation.exception.WebControllerException;
 import com.final_project_college.util.ContextMapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +9,7 @@ public class DispatcherUtils {
 
     private final static ContextMapper contextMapper = ContextMapper.INSTANCE;
 
-    public static Controller getController(HttpServletRequest request) throws WebControllerException {
+    public static Controller getController(HttpServletRequest request) {
         final String requestController = getCommandFromRequest(request);
 
         Controller controller = null;
