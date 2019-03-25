@@ -1,8 +1,8 @@
 package com.final_project_college.util.external_config;
 
 import com.final_project_college.exception.BusinessException;
-import com.final_project_college.exception.SystemException;
-import com.final_project_college.exception.SystemCode;
+import com.final_project_college.exception.DataAccessException;
+import com.final_project_college.exception.DataAccessCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,21 +43,21 @@ public enum FileExternalConfigLoader implements ExternalConfigLoader {
         }
     }
 
-    public String getConfigByName(final String propertyName) throws SystemException {
+    public String getConfigByName(final String propertyName) throws DataAccessException {
         final String property = properties.getProperty(propertyName);
 
-        if (!CONFIGS_EXIST) throw new SystemException("Problem with loading configs file.",
-                SystemCode.EXTERNAL_CONFIG_EXCEPTION);
+        if (!CONFIGS_EXIST) throw new DataAccessException("Problem with loading configs file.",
+                DataAccessCode.EXTERNAL_CONFIG_EXCEPTION);
         else if (property == null)
             throw new BusinessException("This config does not exist in loaded file.",
-                    SystemCode.EXTERNAL_CONFIG_EXCEPTION);
+                    DataAccessCode.EXTERNAL_CONFIG_EXCEPTION);
         else return property;
     }
 
     public void addConfig(final String key, final String value) {
         if ((properties.getProperty(key) != null)) {
             throw new BusinessException("The key is already exist in the configs.",
-                    SystemCode.EXTERNAL_CONFIG_EXCEPTION);
+                    DataAccessCode.EXTERNAL_CONFIG_EXCEPTION);
         } else {
             properties.setProperty(key, value);
         }

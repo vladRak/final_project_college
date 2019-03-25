@@ -1,69 +1,63 @@
 package com.final_project_college.service.impl;
 
-import com.final_project_college.dao.ApplicantDao;
-import com.final_project_college.dao.SchoolExamDao;
-import com.final_project_college.dao.UserDao;
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.Applicant;
-import com.final_project_college.domain.dto.SchoolExam;
 import com.final_project_college.domain.dto.User;
 import com.final_project_college.exception.BusinessCode;
 import com.final_project_college.exception.BusinessException;
-import com.final_project_college.exception.SystemCode;
-import com.final_project_college.exception.SystemException;
+import com.final_project_college.exception.DataAccessCode;
+import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.service.ApplicantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.List;
-
-import static com.final_project_college.util.ServiceValidator.validateApplicant;
-import static com.final_project_college.util.ServiceValidator.validateSchoolExam;
+import java.util.function.BiFunction;
 
 public class ApplicantServiceImpl extends AbstractService implements ApplicantService {
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicantServiceImpl.class);
 
     @Override
-    public Applicant registerApplicant(Applicant applicant, List<SchoolExam> schoolExams, User user) throws SystemException {
+    public Applicant registerApplicant(Applicant applicant, User user) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
-            validateApplicant(applicant);
-            schoolExams.forEach((se) -> validateSchoolExam(se));
+            transactionManager.beginTransaction();
 
-            UserDao userDao = daoFactory.getUserDao(connection);
-            ApplicantDao applicantDao = daoFactory.getApplicantDao(connection);
-            SchoolExamDao schoolExamDao = daoFactory.getSchoolExamDao(connection);
+            BiFunction<Applicant, User, Applicant> prepareApplicant = (a, u) -> {
+                u.setRoleId(daoFactory
+                        .getRoleDao(connection)
+                        .getByRoleName("APPLICANT")
+                        .get().getId());
 
-            daoFactory
+                a.setUserId(
+                        daoFactory
+                                .getUserDao(connection)
+                                .save(u).get().getId());
+
+                return a;
+            };
+
+            Applicant created = daoFactory
                     .getApplicantDao(connection)
-                    .save((a) -> {
-                        a
-                    })
-                    .setUserId(daoFactory
-                            .getUserDao(connection)
-                            .save(user).getId()));
-
-//            daoFactory
-//                    .getApplicantDao(connection)
-//                    .save(applicant
-//                            .setUserId(daoFactory
-//                                    .getUserDao(connection)
-//                                    .save(user).getId()));
+                    .save(prepareApplicant.apply(applicant, user))
+                    .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
 
 
-            return applicantDao.save(validateApplicant(applicant));
+            transactionManager.commit();
+
+            return created;
 
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public int numberOfRows() throws SystemException {
+    public int numberOfRows() throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -73,12 +67,12 @@ public class ApplicantServiceImpl extends AbstractService implements ApplicantSe
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public List<Applicant> getAllPaginated(int start, int count) throws SystemException {
+    public List<Applicant> getAllPaginated(int start, int count) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -88,12 +82,12 @@ public class ApplicantServiceImpl extends AbstractService implements ApplicantSe
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public List<Applicant> getAll() throws SystemException {
+    public List<Applicant> getAll() throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -103,12 +97,12 @@ public class ApplicantServiceImpl extends AbstractService implements ApplicantSe
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public Applicant get(long id) throws SystemException {
+    public Applicant get(long id) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -121,12 +115,12 @@ public class ApplicantServiceImpl extends AbstractService implements ApplicantSe
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public boolean delete(long id) throws SystemException {
+    public boolean delete(long id) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             if (daoFactory
@@ -140,39 +134,39 @@ public class ApplicantServiceImpl extends AbstractService implements ApplicantSe
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public Applicant save(Applicant entity) throws SystemException {
+    public Applicant save(Applicant entity) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
                     .getApplicantDao(connection)
-                    .save(validateApplicant(entity))
-                    .orElseThrow(() -> new SystemException(SystemCode.SQL_EXCEPTION));
+                    .save(entity)
+                    .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
 
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public Applicant update(Applicant entity) throws SystemException {
+    public Applicant update(Applicant entity) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
                     .getApplicantDao(connection)
-                    .update(validateApplicant(entity))
-                    .orElseThrow(() -> new SystemException(SystemCode.SQL_EXCEPTION));
+                    .update(entity)
+                    .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
 
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 }

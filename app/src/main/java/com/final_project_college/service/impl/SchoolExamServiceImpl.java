@@ -4,8 +4,8 @@ import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.SchoolExam;
 import com.final_project_college.exception.BusinessCode;
 import com.final_project_college.exception.BusinessException;
-import com.final_project_college.exception.SystemCode;
-import com.final_project_college.exception.SystemException;
+import com.final_project_college.exception.DataAccessCode;
+import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.service.SchoolExamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,14 +13,34 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.final_project_college.util.ServiceValidator.validateSchoolExam;
-
 public class SchoolExamServiceImpl extends AbstractService implements SchoolExamService {
 
     private static final Logger logger = LoggerFactory.getLogger(SchoolExamServiceImpl.class);
 
     @Override
-    public int numberOfRows() throws SystemException {
+    public SchoolExam addSchoolExam(SchoolExam schoolExam, String email) throws DataAccessException {
+        try (ConnectionWrapper connection = transactionManager.getConnection()) {
+
+            schoolExam.setApplicantId(
+                    daoFactory
+                            .getUserDao(connection)
+                            .getByEmail(email)
+                            .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION))
+                            .getId());
+            return daoFactory
+                    .getSchoolExamDao(connection)
+                    .save(schoolExam)
+                    .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
+        }
+    }
+
+    @Override
+    public int numberOfRows() throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -30,12 +50,12 @@ public class SchoolExamServiceImpl extends AbstractService implements SchoolExam
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public List<SchoolExam> getAllPaginated(int start, int count) throws SystemException {
+    public List<SchoolExam> getAllPaginated(int start, int count) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -45,12 +65,12 @@ public class SchoolExamServiceImpl extends AbstractService implements SchoolExam
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public List<SchoolExam> getAll() throws SystemException {
+    public List<SchoolExam> getAll() throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -60,12 +80,12 @@ public class SchoolExamServiceImpl extends AbstractService implements SchoolExam
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public SchoolExam get(long id) throws SystemException {
+    public SchoolExam get(long id) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -78,12 +98,12 @@ public class SchoolExamServiceImpl extends AbstractService implements SchoolExam
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public boolean delete(long id) throws SystemException {
+    public boolean delete(long id) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             if (daoFactory
@@ -97,37 +117,39 @@ public class SchoolExamServiceImpl extends AbstractService implements SchoolExam
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public SchoolExam save(SchoolExam entity) throws SystemException {
+    public SchoolExam save(SchoolExam entity) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
                     .getSchoolExamDao(connection)
-                    .save(validateSchoolExam(entity));
+                    .save(entity)
+                    .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
 
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public SchoolExam update(SchoolExam entity) throws SystemException {
+    public SchoolExam update(SchoolExam entity) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
                     .getSchoolExamDao(connection)
-                    .update(validateSchoolExam(entity));
+                    .update(entity)
+                    .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
 
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 }

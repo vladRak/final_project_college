@@ -1,6 +1,6 @@
 package com.final_project_college.web.filter;
 
-import com.final_project_college.exception.SystemException;
+import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.service.AbstractServiceFactory;
 import com.final_project_college.service.UserService;
 import com.final_project_college.util.ContextMapper;
@@ -15,7 +15,7 @@ public class AuthUtil {
         serviceFactory = contextMapper.getServiceFactory();
     }
 
-    public String getRoleName(String email, String password) throws SystemException {
+    public String getRoleName(String email, String password) throws DataAccessException {
         UserService userService = serviceFactory.getUserService();
         return userService
                 .getUserRole(userService

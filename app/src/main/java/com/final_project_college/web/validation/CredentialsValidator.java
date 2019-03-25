@@ -1,30 +1,32 @@
 package com.final_project_college.web.validation;
 
-import com.final_project_college.annotation.AdminCredentials;
 import com.final_project_college.annotation.Controller;
+import com.final_project_college.annotation.Credentials;
 import com.final_project_college.annotation.exception.AnnotationException;
 import com.final_project_college.annotation.exception.AnnotationExceptionCode;
-import com.final_project_college.web.filter.WebRole;
 
-import javax.servlet.http.HttpServletRequest;
-
-import static java.util.Objects.nonNull;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class CredentialsValidator {
 
-    public boolean validateCredentials(Controller controller, HttpServletRequest request) {
-        boolean valid;
-        if (nonNull(controller) && controller.getClass().isAnnotationPresent(AdminCredentials.class)) {
-            String role = (String) request.getSession().getAttribute("role");
-            if (nonNull(role) && role.equals(WebRole.ADMIN.name())) {
-                valid = true;
-            } else throw new AnnotationException("Unsupported controller for credentials",
-                    AnnotationExceptionCode.CREDENTIALS_EXCEPTION);
-        } else if (nonNull(controller)) {
-            valid = true;
-        } else throw new AnnotationException("Unsupported controller for credentials",
-                AnnotationExceptionCode.CREDENTIALS_EXCEPTION);
+    public boolean validateCredentials(Controller controller, String role) {
 
-        return valid;
+        if (getAllowed(controller).contains(checkRole(role))) {
+            return true;
+        } else throw new AnnotationException(
+                "Unsupported controller for credentials",
+                AnnotationExceptionCode.CREDENTIALS_EXCEPTION);
+    }
+
+    private String checkRole(String role) {
+        return Optional.ofNullable(role).orElseThrow(() -> new AnnotationException(
+                "Unsupported controller for credentials",
+                AnnotationExceptionCode.CREDENTIALS_EXCEPTION));
+    }
+
+    private List<String> getAllowed(Controller controller) {
+        return Arrays.asList(controller.getClass().getAnnotation(Credentials.class).value());
     }
 }

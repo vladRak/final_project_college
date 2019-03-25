@@ -21,27 +21,158 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
 
     @Override
     public Optional<User> getByEmail(String email) {
-        return Optional.empty();
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("user.findByEmail"),
+                    (rs) -> User.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .eMail(rs.getString("e_mail"))
+                            .password(rs.getString("password"))
+                            .verified(rs.getBoolean("verified"))
+                            .blocked(rs.getBoolean("blocked"))
+                            .roleId(rs.getLong("role_id"))
+                            .build(),
+                    email).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<User> getByEmailAndPassword(String email, String password) {
-        return Optional.empty();
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("user.findByEmailAndPassword"),
+                    (rs) -> User.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .eMail(rs.getString("e_mail"))
+                            .password(rs.getString("password"))
+                            .verified(rs.getBoolean("verified"))
+                            .blocked(rs.getBoolean("blocked"))
+                            .roleId(rs.getLong("role_id"))
+                            .build(),
+                    email).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public List<User> getUnverifiedUsers() {
-        return null;
+    public Optional<User> getUserByVerificationHash(String hash) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("user.findUserByVerificationHash"),
+                    (rs) -> User.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .eMail(rs.getString("e_mail"))
+                            .password(rs.getString("password"))
+                            .verified(rs.getBoolean("verified"))
+                            .blocked(rs.getBoolean("blocked"))
+                            .roleId(rs.getLong("role_id"))
+                            .build(),
+                    hash).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public List<User> getUsersByRoleId(long roleId) {
-        return null;
+    public boolean deleteVerificationHashByUserId(long userId) {
+        try {
+            return deleteById(userId, queryManager
+                    .getQuery("user.deleteVerificationHashByUserId"));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveVerificationHash(long userId, String hash) {
+        try {
+            return userId == queryManager.insertAndGetId(
+                    queryManager.getQuery("user.createVerificationHash"),
+                    userId,
+                    hash);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public List<User> getUnverifiedUsersPaginated(int start, int count) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("user.findUnverifiedUsersPaginated"),
+                    (rs) -> User.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .eMail(rs.getString("e_mail"))
+                            .password(rs.getString("password"))
+                            .verified(rs.getBoolean("verified"))
+                            .blocked(rs.getBoolean("blocked"))
+                            .roleId(rs.getLong("role_id"))
+                            .build(),
+                    start,
+                    count
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
     public List<User> getUnverifiedUsersByRoleId(long roleId) {
-        return null;
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("user.findUnverifiedUsersByRoleId"),
+                    (rs) -> User.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .eMail(rs.getString("e_mail"))
+                            .password(rs.getString("password"))
+                            .verified(rs.getBoolean("verified"))
+                            .blocked(rs.getBoolean("blocked"))
+                            .roleId(rs.getLong("role_id"))
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<User> getUsersByRoleId(long roleId) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("user.findByRoleId"),
+                    (rs) -> User.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .eMail(rs.getString("e_mail"))
+                            .password(rs.getString("password"))
+                            .verified(rs.getBoolean("verified"))
+                            .blocked(rs.getBoolean("blocked"))
+                            .roleId(rs.getLong("role_id"))
+                            .build());
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override

@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.final_project_college.web.util.DispatcherUtils.getClientIp;
-import static com.final_project_college.web.util.DispatcherUtils.getController;
+import static com.final_project_college.web.util.DispatcherUtils.*;
 
 public class DispatcherServlet extends HttpServlet {
 
@@ -40,7 +39,7 @@ public class DispatcherServlet extends HttpServlet {
 
             contextMapper
                     .getCredentialsValidator()
-                    .validateCredentials(controller, request);
+                    .validateCredentials(controller, getRole(request));
 
             controller.init(getServletContext(), request, response);
             controller.process();
@@ -49,7 +48,7 @@ public class DispatcherServlet extends HttpServlet {
             switch (e.getCode()) {
                 case CREDENTIALS_EXCEPTION:
                     logger.error("IP: " + getClientIp(request) + " " + e.getMessage());
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                     break;
                 case WEB_CONTROLLER_EXCEPTION:
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);

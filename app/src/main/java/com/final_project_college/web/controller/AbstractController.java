@@ -14,9 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public abstract class AbstractController implements Controller {
     protected ServletContext context;
@@ -79,6 +80,53 @@ public abstract class AbstractController implements Controller {
                 session.removeAttribute(attr));
     }
 
+    protected void setRequestAttributes(Map<String, Object> attributes) {
+        attributes.forEach((key, value) ->
+                request.setAttribute(key, value));
+    }
+
+//    protected Map<String, String> getRequestParameters(List<String> parameters) {
+//        return new HashMap<String, String>() {{
+//            for (String s : parameters) {
+//                put(s, request.getParameter(s));
+//            }
+//        }};
+//    }
+
+//    protected Map<String, String[]> getRequestParameters(List<String> parameters) {
+////        return new HashMap<String, List<String>>() {{
+////            for (String s : parameters) {
+////                put(s, request.getParameterMap(s));
+////            }
+////        }};
+//
+//        Map<String, String[]> map = request.getParameterMap();
+//        Set set = map.entrySet();
+//        Iterator it = set.iterator();
+//        while (it.hasNext()) {
+//            Map.Entry<String, String[]> entry =
+//                    (Map.Entry<String, String[]>) it.next();
+//            String paramName = entry.getKey();
+//            String[] paramValues = entry.getValue();
+//
+//
+//
+//
+//            if (paramValues.length == 1) {
+//                String paramValue = paramValues[0];
+//                if (paramValue.length() == 0)
+//                    out.println("<b>No Value</b>");
+//                else
+//                    out.println(paramValue);
+//            } else {
+//                out.println("<ul>");
+//                for (int i = 0; i < paramValues.length; i++) {
+//                    out.println("<li>" + paramValues[i] + "</li>");
+//                }
+//            }
+//        }
+//    }
+
     protected Map.Entry<String, Object> attribute(String key, Object value) {
         return MapHelper.entry(key, value);
     }
@@ -86,10 +134,4 @@ public abstract class AbstractController implements Controller {
     protected static Collector<Map.Entry<String, Object>, ?, Map<String, Object>> attributesMap() {
         return MapHelper.entryToMap();
     }
-
-//    protected long getValidId(HttpServletRequest request) throws InvalidInputDataException {
-//        String id = request.getParameter("id");
-//        if (isValidString(id)) return Long.parseLong(id);
-//        else throw new InvalidInputDataException("Invalid ID");
-//    }
 }

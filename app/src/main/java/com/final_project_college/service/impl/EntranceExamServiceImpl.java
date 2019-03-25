@@ -4,8 +4,8 @@ import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.EntranceExam;
 import com.final_project_college.exception.BusinessCode;
 import com.final_project_college.exception.BusinessException;
-import com.final_project_college.exception.SystemCode;
-import com.final_project_college.exception.SystemException;
+import com.final_project_college.exception.DataAccessCode;
+import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.service.EntranceExamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,14 +13,12 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.final_project_college.util.ServiceValidator.validateEntranceExam;
-
 public class EntranceExamServiceImpl extends AbstractService implements EntranceExamService {
 
     private static final Logger logger = LoggerFactory.getLogger(EntranceExamServiceImpl.class);
 
     @Override
-    public int numberOfRows() throws SystemException {
+    public int numberOfRows() throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -30,12 +28,12 @@ public class EntranceExamServiceImpl extends AbstractService implements Entrance
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public List<EntranceExam> getAllPaginated(int start, int count) throws SystemException {
+    public List<EntranceExam> getAllPaginated(int start, int count) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -45,12 +43,12 @@ public class EntranceExamServiceImpl extends AbstractService implements Entrance
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public List<EntranceExam> getAll() throws SystemException {
+    public List<EntranceExam> getAll() throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -60,12 +58,12 @@ public class EntranceExamServiceImpl extends AbstractService implements Entrance
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public EntranceExam get(long id) throws SystemException {
+    public EntranceExam get(long id) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -78,12 +76,12 @@ public class EntranceExamServiceImpl extends AbstractService implements Entrance
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public boolean delete(long id) throws SystemException {
+    public boolean delete(long id) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             if (daoFactory
@@ -97,37 +95,39 @@ public class EntranceExamServiceImpl extends AbstractService implements Entrance
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public EntranceExam save(EntranceExam entity) throws SystemException {
+    public EntranceExam save(EntranceExam entity) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
                     .getEntranceExamDao(connection)
-                    .save(validateEntranceExam(entity));
+                    .save(entity)
+                    .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
 
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public EntranceExam update(EntranceExam entity) throws SystemException {
+    public EntranceExam update(EntranceExam entity) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
                     .getEntranceExamDao(connection)
-                    .update(validateEntranceExam(entity));
+                    .update(entity)
+                    .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
 
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 }

@@ -11,7 +11,13 @@ public interface UserDao extends GenericDao<User> {
 
     Optional<User> getByEmailAndPassword(String email, String password);
 
-    List<User> getUnverifiedUsers();
+    Optional<User> getUserByVerificationHash(String hash);
+
+    boolean deleteVerificationHashByUserId(long userId);
+
+    boolean saveVerificationHash(long userId, String hash);
+
+    List<User> getUnverifiedUsersPaginated(int start, int count);
 
     List<User> getUsersByRoleId(long roleId);
 

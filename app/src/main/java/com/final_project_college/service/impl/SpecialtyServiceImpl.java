@@ -4,8 +4,8 @@ import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.Specialty;
 import com.final_project_college.exception.BusinessCode;
 import com.final_project_college.exception.BusinessException;
-import com.final_project_college.exception.SystemCode;
-import com.final_project_college.exception.SystemException;
+import com.final_project_college.exception.DataAccessCode;
+import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.service.SpecialtyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,14 +13,12 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.final_project_college.util.ServiceValidator.validateSpecialty;
-
 public class SpecialtyServiceImpl extends AbstractService implements SpecialtyService {
 
     private static final Logger logger = LoggerFactory.getLogger(SpecialtyServiceImpl.class);
 
     @Override
-    public int numberOfRows() throws SystemException {
+    public int numberOfRows() throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -30,12 +28,12 @@ public class SpecialtyServiceImpl extends AbstractService implements SpecialtySe
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public List<Specialty> getAllPaginated(int start, int count) throws SystemException {
+    public List<Specialty> getAllPaginated(int start, int count) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -45,12 +43,12 @@ public class SpecialtyServiceImpl extends AbstractService implements SpecialtySe
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public List<Specialty> getAll() throws SystemException {
+    public List<Specialty> getAll() throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -60,12 +58,12 @@ public class SpecialtyServiceImpl extends AbstractService implements SpecialtySe
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public Specialty get(long id) throws SystemException {
+    public Specialty get(long id) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
@@ -78,12 +76,12 @@ public class SpecialtyServiceImpl extends AbstractService implements SpecialtySe
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public boolean delete(long id) throws SystemException {
+    public boolean delete(long id) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             if (daoFactory
@@ -97,37 +95,39 @@ public class SpecialtyServiceImpl extends AbstractService implements SpecialtySe
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public Specialty save(Specialty entity) throws SystemException {
+    public Specialty save(Specialty entity) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
                     .getSpecialtyDao(connection)
-                    .save(validateSpecialty(entity));
+                    .save(entity)
+                    .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
 
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 
     @Override
-    public Specialty update(Specialty entity) throws SystemException {
+    public Specialty update(Specialty entity) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
             return daoFactory
                     .getSpecialtyDao(connection)
-                    .update(validateSpecialty(entity));
+                    .update(entity)
+                    .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
 
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-            throw new SystemException(e, SystemCode.SQL_EXCEPTION);
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
         }
     }
 }

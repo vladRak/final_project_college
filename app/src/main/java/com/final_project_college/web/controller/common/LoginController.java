@@ -1,10 +1,11 @@
 package com.final_project_college.web.controller.common;
 
+import com.final_project_college.annotation.Credentials;
 import com.final_project_college.annotation.WebController;
 import com.final_project_college.domain.dto.Role;
 import com.final_project_college.domain.dto.User;
 import com.final_project_college.exception.BusinessException;
-import com.final_project_college.exception.SystemException;
+import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.service.UserService;
 import com.final_project_college.web.controller.AbstractController;
 import com.final_project_college.web.controller.HttpMethod;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 @WebController("login")
+@Credentials("ANONYMOUS")
 public class LoginController extends AbstractController {
 
     @Override
@@ -38,7 +40,7 @@ public class LoginController extends AbstractController {
 
                 forward("home");
 
-            } catch (SystemException e) {
+            } catch (DataAccessException e) {
                 logger.error(e.getMessage());
                 forward("login");
             } catch (BusinessException e) {

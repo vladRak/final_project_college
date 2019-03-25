@@ -25,6 +25,10 @@ public class DispatcherUtils {
         return controller;
     }
 
+    public static String getRole(HttpServletRequest request){
+        return (String) request.getSession().getAttribute("role");
+    }
+
     public static String getCommandFromRequest(HttpServletRequest request){
         return request.getParameter("controller");
     }

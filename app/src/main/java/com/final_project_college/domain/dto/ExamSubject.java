@@ -1,11 +1,9 @@
 package com.final_project_college.domain.dto;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
+@Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class ExamSubject extends Entity {

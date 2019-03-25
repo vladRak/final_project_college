@@ -10,28 +10,28 @@ public class DataAccessException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    private final SystemCode code;
+    private final DataAccessCode code;
 
-    public DataAccessException(SystemCode code) {
+    public DataAccessException(DataAccessCode code) {
         this.code = code;
     }
 
-    public DataAccessException(String message, SystemCode code) {
+    public DataAccessException(String message, DataAccessCode code) {
         super(message);
         this.code = code;
     }
 
-    public DataAccessException(Throwable cause, SystemCode code) {
+    public DataAccessException(Throwable cause, DataAccessCode code) {
         super(cause);
         this.code = code;
     }
 
-    public DataAccessException(String message, Throwable cause, SystemCode code) {
+    public DataAccessException(String message, Throwable cause, DataAccessCode code) {
         super(message, cause);
         this.code = code;
     }
 
-    public SystemCode getCode() {
+    public DataAccessCode getCode() {
         return code;
     }
 }

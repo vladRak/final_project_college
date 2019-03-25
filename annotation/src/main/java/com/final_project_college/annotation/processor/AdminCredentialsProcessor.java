@@ -12,7 +12,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import java.util.Set;
 
-@SupportedAnnotationTypes({"AdminCredentials"})
+@SupportedAnnotationTypes({"Credentials"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
 public class AdminCredentialsProcessor extends AbstractProcessor {
@@ -42,12 +42,12 @@ public class AdminCredentialsProcessor extends AbstractProcessor {
             TypeMirror tm = elementsUtils.getTypeElement("Controller").asType();
 
             for (Element e2 : e2s) {
-                // Class or super of Class using @AdminCredentials
+                // Class or super of Class using @Credentials
                 // must implement interface Controller
                 if (!typeUtils.isSubtype(e2.asType(), tm)) {
                     messager.printMessage(
                             Diagnostic.Kind.ERROR,
-                            "Class or super of Class using @AdminCredentials " +
+                            "Class or super of Class using @Credentials " +
                                     "must implement interface Controller",
                             e2);
                 }

@@ -1,22 +1,22 @@
 package com.final_project_college.service;
 
-import com.final_project_college.exception.SystemException;
+import com.final_project_college.exception.DataAccessException;
 
 import java.util.List;
 
 public interface GenericService<T> {
 
-    int numberOfRows() throws SystemException;
+    int numberOfRows() throws DataAccessException;
 
-    List<T> getAllPaginated(int start, int count) throws SystemException;
+    List<T> getAllPaginated(int start, int count) throws DataAccessException;
 
-    List<T> getAll() throws SystemException;
+    List<T> getAll() throws DataAccessException;
 
-    T get(long id) throws SystemException;
+    T get(long id) throws DataAccessException;
 
-    boolean delete(long id) throws SystemException;
+    boolean delete(long id) throws DataAccessException;
 
-    T save(T entity) throws SystemException;
+    T save(T entity) throws DataAccessException;
 
-    T update(T entity) throws SystemException;
+    T update(T entity) throws DataAccessException;
 }
