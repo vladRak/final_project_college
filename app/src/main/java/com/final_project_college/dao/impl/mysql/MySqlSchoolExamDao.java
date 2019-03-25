@@ -114,14 +114,13 @@ public class MySqlSchoolExamDao extends MySqlAbstractDao implements SchoolExamDa
     @Override
     public Optional<SchoolExam> save(SchoolExam entity) {
         try {
-            return Optional.of(
-                    SchoolExam.builder()
-                            .id(queryManager.insertAndGetId(
-                                    queryManager.getQuery("school_exam.create")))
-                            .rating(entity.getRating())
-                            .examSubjectId(entity.getExamSubjectId())
-                            .applicantId(entity.getApplicantId())
-                            .build());
+            entity.setId(queryManager.insertAndGetId(
+                    queryManager.getQuery("school_exam.create"),
+                    entity.getRating(),
+                    entity.getExamSubjectId(),
+                    entity.getApplicantId()
+            ));
+            return Optional.of(entity);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             return Optional.empty();

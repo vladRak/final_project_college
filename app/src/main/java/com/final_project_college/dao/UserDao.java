@@ -15,7 +15,7 @@ public interface UserDao extends GenericDao<User> {
 
     boolean deleteVerificationHashByUserId(long userId);
 
-    boolean saveVerificationHash(long userId, String hash);
+    Optional<String> saveVerificationHash(long userId, String hash);
 
     List<User> getUnverifiedUsersPaginated(int start, int count);
 

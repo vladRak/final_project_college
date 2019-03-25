@@ -15,7 +15,7 @@ import java.util.Set;
 @SupportedAnnotationTypes({"Credentials"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
-public class AdminCredentialsProcessor extends AbstractProcessor {
+public class CredentialsProcessor extends AbstractProcessor {
 
     //            private Filer filer;
     private Messager messager;

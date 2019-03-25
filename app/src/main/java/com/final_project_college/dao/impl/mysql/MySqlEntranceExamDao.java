@@ -114,14 +114,15 @@ public class MySqlEntranceExamDao extends MySqlAbstractDao implements EntranceEx
     @Override
     public Optional<EntranceExam> save(EntranceExam entity) {
         try {
-            return Optional.of(
-                    EntranceExam.builder()
-                            .id(queryManager.insertAndGetId(
-                                    queryManager.getQuery("entrance_exam.create")))
-                            .minRating(entity.getMinRating())
-                            .examSubjectId(entity.getExamSubjectId())
-                            .specialtyId(entity.getSpecialtyId())
-                            .build());
+
+            entity.setId(
+                    queryManager.insertAndGetId(
+                            queryManager.getQuery("entrance_exam.create"),
+                            entity.getMinRating(),
+                            entity.getExamSubjectId(),
+                            entity.getSpecialtyId()
+                    ));
+            return Optional.of(entity);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             return Optional.empty();

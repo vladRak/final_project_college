@@ -108,12 +108,12 @@ public class MySqlExamSubjectDao extends MySqlAbstractDao implements ExamSubject
     @Override
     public Optional<ExamSubject> save(ExamSubject entity) {
         try {
-            return Optional.of(
-                    ExamSubject.builder()
-                            .id(queryManager.insertAndGetId(
-                                    queryManager.getQuery("exam_subject.create")))
-                            .subjectName(entity.getSubjectName())
-                            .build());
+            entity.setId(
+                    queryManager.insertAndGetId(
+                            queryManager.getQuery("exam_subject.create"),
+                            entity.getSubjectName()
+                    ));
+            return Optional.of(entity);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             return Optional.empty();

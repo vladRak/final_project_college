@@ -2,6 +2,7 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.dao.SpecialtyDao;
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
+import com.final_project_college.domain.dto.EntranceExam;
 import com.final_project_college.domain.dto.Specialty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,25 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
 
     public MySqlSpecialtyDao(ConnectionWrapper connection) {
         super(connection);
+    }
+
+    @Override
+    public List<EntranceExam> getEntranceExams(long specialtyId) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("specialty.findAllPaginated"),
+                    (rs) -> EntranceExam.builder()
+                            .id(rs.getLong("id"))
+                            .minRating(rs.getShort("min_rating"))
+                            .examSubjectId(rs.getLong("exam_subject_id"))
+                            .specialtyId(rs.getLong("specialty_id"))
+                            .build(),
+                    specialtyId
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -110,14 +130,14 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     @Override
     public Optional<Specialty> save(Specialty entity) {
         try {
-            return Optional.of(
-                    Specialty.builder()
-                            .id(queryManager.insertAndGetId(
-                                    queryManager.getQuery("specialty.create")))
-                            .specialtyName(entity.getSpecialtyName())
-                            .governmentOrder(entity.getGovernmentOrder())
-                            .contractOrder(entity.getContractOrder())
-                            .build());
+            entity.setId(
+                    queryManager.insertAndGetId(
+                            queryManager.getQuery("specialty.create"),
+                            entity.getSpecialtyName(),
+                            entity.getGovernmentOrder(),
+                            entity.getContractOrder()
+                    ));
+            return Optional.of(entity);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             return Optional.empty();

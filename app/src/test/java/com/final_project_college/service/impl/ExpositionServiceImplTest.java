@@ -6,7 +6,6 @@ import com.final_project_college.dao.jdbc.impl.DefaultTransactionManager;
 import com.final_project_college.dao.old.ExpositionDao;
 import com.final_project_college.dao.impl.mysql.MySqlDaoFactory;
 import com.final_project_college.domain.dto.old.Exposition;
-import com.final_project_college.service.ExpositionService;
 import com.final_project_college.util.ContextMapper;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;

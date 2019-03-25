@@ -108,12 +108,13 @@ public class MySqlRoleDao extends MySqlAbstractDao implements RoleDao {
     @Override
     public Optional<Role> save(Role entity) {
         try {
-            return Optional.of(
-                    Role.builder()
-                            .id(queryManager.insertAndGetId(
-                                    queryManager.getQuery("role.create")))
-                            .roleName(entity.getRoleName())
-                            .build());
+
+            entity.setId(
+                    queryManager.insertAndGetId(
+                            queryManager.getQuery("role.create"),
+                            entity.getRoleName()
+                    ));
+            return Optional.of(entity);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             return Optional.empty();

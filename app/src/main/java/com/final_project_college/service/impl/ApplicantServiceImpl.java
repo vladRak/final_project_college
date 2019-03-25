@@ -1,5 +1,6 @@
 package com.final_project_college.service.impl;
 
+import com.final_project_college.dao.UserDao;
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.Applicant;
 import com.final_project_college.domain.dto.User;
@@ -8,10 +9,13 @@ import com.final_project_college.exception.BusinessException;
 import com.final_project_college.exception.DataAccessCode;
 import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.service.ApplicantService;
+import com.final_project_college.util.HashingUtil;
+import com.final_project_college.web.filter.WebRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -23,21 +27,25 @@ public class ApplicantServiceImpl extends AbstractService implements ApplicantSe
     public Applicant registerApplicant(Applicant applicant, User user) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
 
-            transactionManager.beginTransaction();
-
             BiFunction<Applicant, User, Applicant> prepareApplicant = (a, u) -> {
                 u.setRoleId(daoFactory
                         .getRoleDao(connection)
-                        .getByRoleName("APPLICANT")
+                        .getByRoleName(WebRole.APPLICANT.name())
                         .get().getId());
 
-                a.setUserId(
-                        daoFactory
-                                .getUserDao(connection)
-                                .save(u).get().getId());
+                UserDao userDao = daoFactory.getUserDao(connection);
+
+                a.setUserId(userDao.save(u).get().getId());
+
+                userDao.saveVerificationHash(
+                        u.getId(),
+                        HashingUtil.hash(
+                                new Timestamp(System.currentTimeMillis()).toString()));
 
                 return a;
             };
+
+            transactionManager.beginTransaction();
 
             Applicant created = daoFactory
                     .getApplicantDao(connection)
@@ -50,6 +58,12 @@ public class ApplicantServiceImpl extends AbstractService implements ApplicantSe
             return created;
 
         } catch (SQLException e) {
+            try {
+                transactionManager.rollback();
+            } catch (SQLException e1) {
+                logger.error(e.getMessage());
+                throw new DataAccessException(e1, DataAccessCode.TRANSACTION_EXCEPTION);
+            }
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);

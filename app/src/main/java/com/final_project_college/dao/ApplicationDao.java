@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface ApplicationDao extends GenericDao<Application> {
 
+    List<Application> getApplicationsByApplicantEmail(String email);
+
     List<Application> getApplicationsByApplicantId(long applicantId);
 
     List<Application> getApplicationsBySpecialtyId(long specialtyId);

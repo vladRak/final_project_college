@@ -3,6 +3,7 @@ package com.final_project_college.dao.impl.mysql;
 import com.final_project_college.dao.ApplicantDao;
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.Applicant;
+import com.final_project_college.domain.dto.SchoolExam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,8 +11,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao {
 
@@ -27,8 +26,40 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
     }
 
     @Override
-    public Optional<Applicant> getApplicantBySchoolExamId(long schoolExamId) {
-        return Optional.empty();
+    public List<SchoolExam> getApplicantExams(long applicantId) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findApplicantExams"),
+                    (rs) -> SchoolExam.builder()
+                            .id(rs.getLong("id"))
+                            .rating(rs.getShort("rating"))
+                            .examSubjectId(rs.getLong("exam_subject_id"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .build(),
+                    applicantId
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public Optional<Applicant> getApplicantByEmail(String email) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findApplicantByEmail"),
+                    (rs) -> Applicant.builder()
+                            .id(rs.getLong("id"))
+                            .certificateRating(rs.getBigDecimal("certificate_rating"))
+                            .register(rs.getBoolean("register"))
+                            .userId(rs.getLong("user_id"))
+                            .build(),
+                    email).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -116,14 +147,16 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
     @Override
     public Optional<Applicant> save(Applicant entity) {
         try {
-            return Optional.of(
-                    Applicant.builder()
-                            .id(queryManager.insertAndGetId(
-                                    queryManager.getQuery("applicant.create")))
-                            .certificateRating(entity.getCertificateRating())
-                            .register(entity.isRegister())
-                            .userId(entity.getUserId())
-                            .build());
+            entity.setId(
+                    queryManager.insertAndGetId(
+                            queryManager.getQuery("applicant.create"),
+                            entity.getCertificateRating(),
+                            entity.isRegister(),
+                            entity.getUserId()
+                    ));
+
+            return Optional.of(entity);
+
         } catch (SQLException e) {
             logger.error(e.getMessage());
             return Optional.empty();

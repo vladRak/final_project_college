@@ -30,11 +30,6 @@ public class ApplicantRegisterController extends AbstractController {
 
                 applicantService.registerApplicant(validateApplicant(params), validateUser(params));
 
-                sessionSetAttributes(Stream.of(
-                        attribute("recordsPerPage", 2)
-                        ).collect(attributesMap())
-                );
-
                 request.setAttribute("successMessage",
                         "Applicant created successfully. Confirm your email.");
                 forward("register");

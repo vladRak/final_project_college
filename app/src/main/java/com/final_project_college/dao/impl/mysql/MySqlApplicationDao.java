@@ -20,6 +20,27 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
     }
 
     @Override
+    public List<Application> getApplicationsByApplicantEmail(String email) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("application.findApplicationsByApplicantEmail"),
+                    (rs) -> Application.builder()
+                            .id(rs.getLong("id"))
+                            .contract(rs.getBoolean("contract"))
+                            .created(rs.getTimestamp("created"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .specialtyId(rs.getLong("specialty_id"))
+                            .statusId(rs.getLong("status_id"))
+                            .build(),
+                    email
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
     public List<Application> getApplicationsByApplicantId(long applicantId) {
         try {
             return queryManager.select(
@@ -141,16 +162,19 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
     @Override
     public Optional<Application> save(Application entity) {
         try {
-            return Optional.of(
-                    Application.builder()
-                            .id(queryManager.insertAndGetId(
-                                    queryManager.getQuery("application.create")))
-                            .contract(entity.isContract())
-                            .created(entity.getCreated())
-                            .applicantId(entity.getApplicantId())
-                            .specialtyId(entity.getSpecialtyId())
-                            .statusId(entity.getStatusId())
-                            .build());
+
+            entity.setId(
+                    queryManager.insertAndGetId(
+                            queryManager.getQuery("application.create"),
+                            entity.isContract(),
+                            entity.getCreated(),
+                            entity.getApplicantId(),
+                            entity.getSpecialtyId(),
+                            entity.getStatusId()
+                    ));
+
+            return Optional.of(entity);
+
         } catch (SQLException e) {
             logger.error(e.getMessage());
             return Optional.empty();

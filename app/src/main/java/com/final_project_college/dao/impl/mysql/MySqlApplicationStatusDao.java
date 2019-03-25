@@ -20,6 +20,22 @@ public class MySqlApplicationStatusDao extends MySqlAbstractDao implements Appli
     }
 
     @Override
+    public Optional<ApplicationStatus> getByName(String statusName) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("application_status.findByName"),
+                    (rs) -> ApplicationStatus.builder()
+                            .id(rs.getLong("id"))
+                            .statusName("status_name")
+                            .build(),
+                    statusName).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public int numberOfRows() {
         try {
             return getNumberOfRows(queryManager
@@ -98,12 +114,15 @@ public class MySqlApplicationStatusDao extends MySqlAbstractDao implements Appli
     @Override
     public Optional<ApplicationStatus> save(ApplicationStatus entity) {
         try {
-            return Optional.of(
-                    ApplicationStatus.builder()
-                            .id(queryManager.insertAndGetId(
-                                    queryManager.getQuery("application_status.create")))
-                            .statusName(entity.getStatusName())
-                            .build());
+
+            entity.setId(
+                    queryManager.insertAndGetId(
+                            queryManager.getQuery("application_status.create"),
+                            entity.getStatusName()
+                    ));
+
+            return Optional.of(entity);
+
         } catch (SQLException e) {
             logger.error(e.getMessage());
             return Optional.empty();

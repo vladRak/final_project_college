@@ -97,15 +97,17 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     }
 
     @Override
-    public boolean saveVerificationHash(long userId, String hash) {
+    public Optional<String> saveVerificationHash(long userId, String hash) {
         try {
-            return userId == queryManager.insertAndGetId(
+            if (userId == queryManager.insertAndGetId(
                     queryManager.getQuery("user.createVerificationHash"),
                     userId,
-                    hash);
+                    hash))
+                return Optional.of(hash);
+            else return Optional.empty();
         } catch (SQLException e) {
             logger.error(e.getMessage());
-            return false;
+            return Optional.empty();
         }
     }
 
@@ -272,18 +274,18 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     @Override
     public Optional<User> save(User entity) {
         try {
-            return Optional.of(
-                    User.builder()
-                            .id(queryManager.insertAndGetId(
-                                    queryManager.getQuery("user.create")))
-                            .firstName(entity.getFirstName())
-                            .lastName(entity.getLastName())
-                            .eMail(entity.getEMail())
-                            .password(entity.getPassword())
-                            .verified(entity.isVerified())
-                            .blocked(entity.isBlocked())
-                            .roleId(entity.getRoleId())
-                            .build());
+            entity.setId(
+                    queryManager.insertAndGetId(
+                            queryManager.getQuery("user.create"),
+                            entity.getFirstName(),
+                            entity.getLastName(),
+                            entity.getEMail(),
+                            entity.getPassword(),
+                            entity.isVerified(),
+                            entity.isBlocked(),
+                            entity.getRoleId()
+                    ));
+            return Optional.of(entity);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             return Optional.empty();

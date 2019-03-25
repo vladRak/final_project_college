@@ -21,16 +21,6 @@ public class MySqlDaoFactory implements AbstractDaoFactory {
     }
 
     @Override
-    public CollegeDao getCollegeDao(ConnectionWrapper connection) {
-        return new MySqlCollegeDao(connection);
-    }
-
-    @Override
-    public CollegeSpecialtyDao getCollegeSpecialtyDao(ConnectionWrapper connection) {
-        return new MySqlCollegeSpecialtyDao(connection);
-    }
-
-    @Override
     public EntranceExamDao getEntranceExamDao(ConnectionWrapper connection) {
         return new MySqlEntranceExamDao(connection);
     }
@@ -38,11 +28,6 @@ public class MySqlDaoFactory implements AbstractDaoFactory {
     @Override
     public ExamSubjectDao getExamSubjectDao(ConnectionWrapper connection) {
         return new MySqlExamSubjectDao(connection);
-    }
-
-    @Override
-    public PrivilegeDao getPrivilegeDao(ConnectionWrapper connection) {
-        return new MySqlPrivilegeDao(connection);
     }
 
     @Override

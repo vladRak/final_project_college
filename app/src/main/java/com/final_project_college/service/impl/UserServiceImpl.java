@@ -1,5 +1,6 @@
 package com.final_project_college.service.impl;
 
+import com.final_project_college.dao.UserDao;
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.Role;
 import com.final_project_college.domain.dto.User;
@@ -8,11 +9,12 @@ import com.final_project_college.exception.BusinessException;
 import com.final_project_college.exception.DataAccessCode;
 import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.service.UserService;
-import com.final_project_college.util.PasswordUtil;
+import com.final_project_college.util.HashingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
             Optional<User> user = daoFactory
                     .getUserDao(connection)
-                    .getByEmailAndPassword(email, PasswordUtil.hash(password));
+                    .getByEmailAndPassword(email, HashingUtil.hash(password));
 
             if (user.isPresent()) {
                 return user.orElseThrow(() -> new BusinessException(
@@ -46,6 +48,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
     @Override
     public User registerUser(User user) throws DataAccessException {
         try (ConnectionWrapper connection = transactionManager.getConnection()) {
+            UserDao userDao = daoFactory.getUserDao(connection);
 
             transactionManager.beginTransaction();
 
@@ -54,15 +57,24 @@ public class UserServiceImpl extends AbstractService implements UserService {
                     .get(user.getRoleId())
                     .orElseThrow(() -> new BusinessException(BusinessCode.BAD_REQUEST));
 
-            daoFactory
-                    .getUserDao(connection)
-                    .save(user)
+            User created = userDao.save(user)
                     .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
+
+            userDao.saveVerificationHash(
+                    created.getId(),
+                    HashingUtil.hash(
+                            new Timestamp(System.currentTimeMillis()).toString()));
 
             transactionManager.commit();
 
-            return user;
+            return created;
         } catch (SQLException e) {
+            try {
+                transactionManager.rollback();
+            } catch (SQLException e1) {
+                logger.error(e.getMessage());
+                throw new DataAccessException(e1, DataAccessCode.TRANSACTION_EXCEPTION);
+            }
             e.printStackTrace();
             logger.error(e.getMessage());
             throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
