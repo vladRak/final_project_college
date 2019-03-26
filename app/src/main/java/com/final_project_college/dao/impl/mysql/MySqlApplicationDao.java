@@ -26,7 +26,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                     queryManager.getQuery("application.findApplicationsByApplicantEmail"),
                     (rs) -> Application.builder()
                             .id(rs.getLong("id"))
-                            .contract(rs.getBoolean("contract"))
                             .created(rs.getTimestamp("created"))
                             .applicantId(rs.getLong("applicant_id"))
                             .specialtyId(rs.getLong("specialty_id"))
@@ -47,7 +46,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                     queryManager.getQuery("application.findApplicationsByApplicantId"),
                     (rs) -> Application.builder()
                             .id(rs.getLong("id"))
-                            .contract(rs.getBoolean("contract"))
                             .created(rs.getTimestamp("created"))
                             .applicantId(rs.getLong("applicant_id"))
                             .specialtyId(rs.getLong("specialty_id"))
@@ -89,7 +87,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                     queryManager.getQuery("applicant.findAllPaginated"),
                     (rs) -> Application.builder()
                             .id(rs.getLong("id"))
-                            .contract(rs.getBoolean("contract"))
                             .created(rs.getTimestamp("created"))
                             .applicantId(rs.getLong("applicant_id"))
                             .specialtyId(rs.getLong("specialty_id"))
@@ -111,7 +108,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                     queryManager.getQuery("applicant.findAll"),
                     (rs) -> Application.builder()
                             .id(rs.getLong("id"))
-                            .contract(rs.getBoolean("contract"))
                             .created(rs.getTimestamp("created"))
                             .applicantId(rs.getLong("applicant_id"))
                             .specialtyId(rs.getLong("specialty_id"))
@@ -130,7 +126,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                     queryManager.getQuery("application.findById"),
                     (rs) -> Application.builder()
                             .id(rs.getLong("id"))
-                            .contract(rs.getBoolean("contract"))
                             .created(rs.getTimestamp("created"))
                             .applicantId(rs.getLong("applicant_id"))
                             .specialtyId(rs.getLong("specialty_id"))
@@ -166,7 +161,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
             entity.setId(
                     queryManager.insertAndGetId(
                             queryManager.getQuery("application.create"),
-                            entity.isContract(),
                             entity.getCreated(),
                             entity.getApplicantId(),
                             entity.getSpecialtyId(),
@@ -186,7 +180,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
         try {
             queryManager.update(
                     queryManager.getQuery("application.update"),
-                    entity.isContract(),
                     entity.getCreated(),
                     entity.getApplicantId(),
                     entity.getSpecialtyId(),

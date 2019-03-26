@@ -10,14 +10,14 @@ public class Specialty extends Entity {
 
     private String specialtyName;
     private int governmentOrder;
-    private int contractOrder;
+    private boolean sendInvitations;
 
     @Builder
     private Specialty(long id,String specialtyName,
-                      int governmentOrder,int contractOrder) {
+                      int governmentOrder,
+                      boolean sendInvitations) {
         super(id);
         this.specialtyName = specialtyName;
         this.governmentOrder = governmentOrder;
-        this.contractOrder = contractOrder;
     }
 }

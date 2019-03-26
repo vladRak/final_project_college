@@ -6,7 +6,11 @@ import com.final_project_college.domain.dto.SchoolExam;
 import com.final_project_college.exception.BusinessCode;
 import com.final_project_college.exception.BusinessException;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 public class ServiceValidator {
     private static final int PASSED_EXAMS = 3;
@@ -45,5 +49,35 @@ public class ServiceValidator {
         } else throw new BusinessException(
                 "You have " + MAX_APPLICATION + ". This is maximum.",
                 BusinessCode.INCORRECT_INPUT);
+    }
+
+    public static List<Application> checkApplicationExist(List<Application> applications, long specialtyId) {
+        applications.forEach((application) -> {
+                    if (application.getSpecialtyId() == specialtyId)
+                        throw new BusinessException(
+                                "You have application to this specialty",
+                                BusinessCode.INCORRECT_INPUT);
+                }
+        );
+        return applications;
+    }
+
+    public static String getNewHash(){
+        return HashingUtil.hash(
+                new Timestamp(System.currentTimeMillis()).toString());
+    }
+
+    public static boolean validateHash(String hash1, String hash2){
+        return HashingUtil.verifyValue(hash1,hash2);
+    }
+
+    public static Optional<String> createLinkToVerify(String contextPath, String hash){
+        try {
+            String host = InetAddress.getLocalHost().getCanonicalHostName();
+            return Optional.ofNullable(String.format("http://%s:%s%s", host, contextPath));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 }

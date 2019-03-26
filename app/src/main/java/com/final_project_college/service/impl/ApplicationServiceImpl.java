@@ -18,8 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.final_project_college.util.ServiceValidator.checkApplicationCapacity;
-import static com.final_project_college.util.ServiceValidator.checkPassedExams;
+import static com.final_project_college.util.ServiceValidator.*;
 
 public class ApplicationServiceImpl extends AbstractService implements ApplicationService {
 
@@ -42,8 +41,12 @@ public class ApplicationServiceImpl extends AbstractService implements Applicati
                             "Invalid session",
                             BusinessCode.UNAUTHORIZED));
 
-            checkApplicationCapacity(applicationDao
-                    .getApplicationsByApplicantId(applicant.getId()));
+            checkApplicationCapacity(
+                    checkApplicationExist(
+                            applicationDao
+                                    .getApplicationsByApplicantId(
+                                            applicant.getId()),
+                            application.getId()));
 
             checkPassedExams(
                     applicantDao.getApplicantExams(applicant.getId()),
@@ -178,6 +181,6 @@ public class ApplicationServiceImpl extends AbstractService implements Applicati
 
     @Override
     public Application update(Application entity) throws DataAccessException {
-        throw new BusinessException("Application does not support update",BusinessCode.BAD_REQUEST);
+        throw new BusinessException("Application does not support update", BusinessCode.BAD_REQUEST);
     }
 }

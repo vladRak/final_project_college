@@ -19,6 +19,10 @@ public enum ContextMapper {
         servletContext = context;
     }
 
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
+
     public AbstractDaoFactory getDaoFactory() {
         return (AbstractDaoFactory) servletContext.getAttribute("mySqlDaoFactory");
     }

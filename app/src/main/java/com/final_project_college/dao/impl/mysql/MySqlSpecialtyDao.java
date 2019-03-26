@@ -4,6 +4,7 @@ import com.final_project_college.dao.SpecialtyDao;
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.EntranceExam;
 import com.final_project_college.domain.dto.Specialty;
+import com.final_project_college.domain.dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,40 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
 
     public MySqlSpecialtyDao(ConnectionWrapper connection) {
         super(connection);
+    }
+
+    @Override
+    public boolean saveInvitation(long applicationId, long specialtyId) {
+        try {
+            return -1 < queryManager.insertAndGetId(
+                    queryManager.getQuery("specialty.saveInvitation"),
+                    applicationId,
+                    specialtyId
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public List<User> getUsersToSendInvitations(long specialtyId, int governmentOrder) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("specialty.getUsersToInvitation"),
+                    (rs) -> User.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .eMail(rs.getString("e_mail"))
+                            .build(),
+                    specialtyId,
+                    governmentOrder
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -64,7 +99,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
                             .id(rs.getLong("id"))
                             .specialtyName(rs.getString("specialty_name"))
                             .governmentOrder(rs.getInt("government_order"))
-                            .contractOrder(rs.getInt("contract_order"))
+                            .sendInvitations(rs.getBoolean("send_invitation"))
                             .build(),
                     start,
                     count
@@ -84,7 +119,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
                             .id(rs.getLong("id"))
                             .specialtyName(rs.getString("specialty_name"))
                             .governmentOrder(rs.getInt("government_order"))
-                            .contractOrder(rs.getInt("contract_order"))
+                            .sendInvitations(rs.getBoolean("send_invitation"))
                             .build());
         } catch (SQLException e) {
             logger.error(e.getMessage());
@@ -101,7 +136,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
                             .id(rs.getLong("id"))
                             .specialtyName(rs.getString("specialty_name"))
                             .governmentOrder(rs.getInt("government_order"))
-                            .contractOrder(rs.getInt("contract_order"))
+                            .sendInvitations(rs.getBoolean("send_invitation"))
                             .build(),
                     id).stream().findFirst();
         } catch (SQLException e) {
@@ -135,7 +170,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
                             queryManager.getQuery("specialty.create"),
                             entity.getSpecialtyName(),
                             entity.getGovernmentOrder(),
-                            entity.getContractOrder()
+                            entity.isSendInvitations()
                     ));
             return Optional.of(entity);
         } catch (SQLException e) {
@@ -151,7 +186,7 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
                     queryManager.getQuery("specialty.update"),
                     entity.getSpecialtyName(),
                     entity.getGovernmentOrder(),
-                    entity.getContractOrder(),
+                    entity.isSendInvitations(),
                     entity.getId()
             );
             return Optional.of(entity);
