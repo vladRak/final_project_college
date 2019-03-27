@@ -11,13 +11,13 @@
 
     <artifactId>annotation</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.auto.service</groupId>
-            <artifactId>auto-service</artifactId>
-            <version>1.0-rc2</version>
-        </dependency>
-    </dependencies>
+    <!--<dependencies>-->
+        <!--<dependency>-->
+            <!--<groupId>com.google.auto.service</groupId>-->
+            <!--<artifactId>auto-service</artifactId>-->
+            <!--<version>1.0-rc2</version>-->
+        <!--</dependency>-->
+    <!--</dependencies>-->
 
     <build>
         <finalName>annotation</finalName>
@@ -41,31 +41,31 @@
                     <verbose>true</verbose>
                 </configuration>
 
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--&lt;!&ndash;<id>default-cli</id>&ndash;&gt;-->
-                        <!--<id>default-compile</id>-->
-                        <!--<configuration>-->
-                            <!--&lt;!&ndash;<proc>none</proc>&ndash;&gt;-->
-                            <!--<compilerArgument>-proc:none</compilerArgument>-->
-                            <!--<includes>-->
-                                <!--<include>com/final_project_college/annotation/processor/WebControllerProcessor.java</include>-->
-                                <!--<include>com/final_project_college/annotation/processor/WebControllerProcessor.java</include>-->
-                                <!--<include>com/final_project_college/annotation/Controller.java</include>-->
-                                <!--<include>com/final_project_college/annotation/Controller.java</include>-->
-                                <!--&lt;!&ndash;include dependencies required for LogMeCustomAnnotationProcessor &ndash;&gt;-->
-                            <!--</includes>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--&lt;!&ndash;<id>compile-everything-else</id>&ndash;&gt;-->
-                        <!--<id>compile-other</id>-->
-                        <!--<phase>compile</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>compile</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
+                <executions>
+                    <execution>
+                        <!--<id>default-cli</id>-->
+                        <id>default-compile</id>
+                        <configuration>
+                            <!--<proc>none</proc>-->
+                            <compilerArgument>-proc:none</compilerArgument>
+                            <includes>
+                                <include>com/final_project_college/annotation/processor/WebControllerProcessor.java</include>
+                                <include>com/final_project_college/annotation/processor/CredentialsProcessor.java</include>
+                                <include>com/final_project_college/annotation/Controller.java</include>
+                                <include>com/final_project_college/annotation/Controller.java</include>
+                                <!--include dependencies required for LogMeCustomAnnotationProcessor -->
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!--<id>compile-everything-else</id>-->
+                        <id>compile-other</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
 
             </plugin>
         </plugins>

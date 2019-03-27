@@ -67,27 +67,6 @@ public class DefaultQueryManager implements QueryManager {
         }
     }
 
-//    @Override
-//    public long insert(final String sql, final Object... parameters)
-//            throws SQLException {
-//
-//        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-//            preparedStatementParameterSetter.setParameters(ps, parameters);
-//            long generatedId = -1L;
-//            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-//                if (generatedKeys.next()) {
-//                    generatedId = generatedKeys.getLong("id");
-////                    generatedId = generatedKeys.getLong(1);
-//                }
-//            }
-//
-//            if (-1 == generatedId) {
-//                throw new SQLException("No id is returned");
-//            }
-//            return generatedId;
-//        }
-//    }
-
     @Override
     public int update(final String sql, final Object... parameters)
             throws SQLException {

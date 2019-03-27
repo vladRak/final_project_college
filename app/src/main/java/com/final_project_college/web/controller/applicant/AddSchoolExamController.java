@@ -1,4 +1,4 @@
-package com.final_project_college.web.controller.exam;
+package com.final_project_college.web.controller.applicant;
 
 import com.final_project_college.annotation.Credentials;
 import com.final_project_college.annotation.WebController;
@@ -27,7 +27,7 @@ public class AddSchoolExamController extends AbstractController {
                         .addSchoolExam(validateSchoolExam(request.getParameterMap()),
                                 (String) session.getAttribute("email"));
 
-                request.setAttribute("addSchoolExam",
+                request.setAttribute("message",
                         "SchoolExam created successfully.");
                 forward("addSchoolExam");
 
@@ -35,7 +35,7 @@ public class AddSchoolExamController extends AbstractController {
                 logger.error(e.getMessage());
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } catch (BusinessException e) {
-                request.setAttribute("errorMessage",
+                request.setAttribute("message",
                         e.getMessage() + e.getCode().getMsg());
                 forward("addSchoolExam");
             }

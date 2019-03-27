@@ -15,11 +15,6 @@ public class ServiceFactory implements AbstractServiceFactory {
     }
 
     @Override
-    public ApplicationStatusService getApplicationStatusService() {
-        return new ApplicationStatusServiceImpl();
-    }
-
-    @Override
     public EntranceExamService getEntranceExamService() {
         return new EntranceExamServiceImpl();
     }

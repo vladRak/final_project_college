@@ -1,5 +1,6 @@
 package com.final_project_college.web.filter;
 
+import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.web.listener.SessionCounterListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,11 +47,12 @@ public class AuthFilter implements Filter {
 
         } else if (nonNull(email) && nonNull(password)) {
             String role = WebRole.ANONYMOUS.name();
+
             try {
                 role = new AuthUtil().getRoleName(email, password);
-            } catch (VerificationException | DataAccessException e) {
-                logger.error(e.getMessage());
+            } catch (DataAccessException e) {
                 e.printStackTrace();
+                logger.error(e.getMessage());
             }
 
             moveToMenu(req, res, role);
@@ -80,21 +82,11 @@ public class AuthFilter implements Filter {
         System.out.println("Req controller: " + requestCommand);
         System.out.println(req.getLocale().toString());
 
-        if (role.equals(WebRole.ADMIN.name()) || role.equals(WebRole.USER.name())) {
-            System.out.println("Role identify");
-            req.getRequestDispatcher(requestURI).forward(req, res);
-        } else if (nonNull(requestCommand)) {
-            if (requestCommand.equals("register") || requestCommand.equals("login")) {
-                System.out.println("Move to register or login");
+        if(role.equals(WebRole.ANONYMOUS.name()) && nonNull(requestCommand)){
+            if (requestCommand.equals("register") || requestCommand.equals("login"))
                 req.getRequestDispatcher(requestURI).forward(req, res);
-            } else {
-                System.out.println("Command note null request been forward to index");
-                req.getRequestDispatcher("index.jsp").forward(req, res);
-            }
-        } else {
-            System.out.println("Request been forward to index");
-            req.getRequestDispatcher("index.jsp").forward(req, res);
-        }
+            else req.getRequestDispatcher("index.jsp").forward(req, res);
+        }else req.getRequestDispatcher("index.jsp").forward(req, res);
     }
 
     @Override

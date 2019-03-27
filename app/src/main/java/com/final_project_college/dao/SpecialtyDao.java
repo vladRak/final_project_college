@@ -1,5 +1,6 @@
 package com.final_project_college.dao;
 
+import com.final_project_college.domain.dto.Application;
 import com.final_project_college.domain.dto.EntranceExam;
 import com.final_project_college.domain.dto.Specialty;
 import com.final_project_college.domain.dto.User;
@@ -15,5 +16,5 @@ public interface SpecialtyDao extends GenericDao<Specialty> {
 
     boolean saveInvitation(long applicationId, long specialtyId);
 
-    List<User> getUsersToSendInvitations(long specialtyId, int governmentOrder);
+    List<Application> getApplicationsToSendInvitations(long specialtyId, int governmentOrder);
 }

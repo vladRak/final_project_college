@@ -29,7 +29,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                             .created(rs.getTimestamp("created"))
                             .applicantId(rs.getLong("applicant_id"))
                             .specialtyId(rs.getLong("specialty_id"))
-                            .statusId(rs.getLong("status_id"))
                             .build(),
                     email
             );
@@ -49,7 +48,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                             .created(rs.getTimestamp("created"))
                             .applicantId(rs.getLong("applicant_id"))
                             .specialtyId(rs.getLong("specialty_id"))
-                            .statusId(rs.getLong("status_id"))
                             .build(),
                     applicantId
             );
@@ -90,7 +88,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                             .created(rs.getTimestamp("created"))
                             .applicantId(rs.getLong("applicant_id"))
                             .specialtyId(rs.getLong("specialty_id"))
-                            .statusId(rs.getLong("status_id"))
                             .build(),
                     start,
                     count
@@ -111,7 +108,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                             .created(rs.getTimestamp("created"))
                             .applicantId(rs.getLong("applicant_id"))
                             .specialtyId(rs.getLong("specialty_id"))
-                            .statusId(rs.getLong("status_id"))
                             .build());
         } catch (SQLException e) {
             logger.error(e.getMessage());
@@ -129,7 +125,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                             .created(rs.getTimestamp("created"))
                             .applicantId(rs.getLong("applicant_id"))
                             .specialtyId(rs.getLong("specialty_id"))
-                            .statusId(rs.getLong("status_id"))
                             .build(),
                     id).stream().findFirst();
         } catch (SQLException e) {
@@ -163,8 +158,7 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                             queryManager.getQuery("application.create"),
                             entity.getCreated(),
                             entity.getApplicantId(),
-                            entity.getSpecialtyId(),
-                            entity.getStatusId()
+                            entity.getSpecialtyId()
                     ));
 
             return Optional.of(entity);
@@ -183,7 +177,6 @@ public class MySqlApplicationDao extends MySqlAbstractDao implements Application
                     entity.getCreated(),
                     entity.getApplicantId(),
                     entity.getSpecialtyId(),
-                    entity.getStatusId(),
                     entity.getId()
             );
             return Optional.of(entity);

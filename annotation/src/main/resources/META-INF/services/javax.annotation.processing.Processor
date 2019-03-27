@@ -1,1 +1,2 @@
-#WebControllerProcessor
+com.final_project_college.annotation.processor.WebControllerProcessor
+com.final_project_college.annotation.processor.CredentialsProcessor

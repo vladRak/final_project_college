@@ -6,7 +6,8 @@ public enum BusinessCode {
     UNAUTHORIZED(401,"Client unauthorized"),
     UNCONFIRMED_USER(1, "User must confirm email"),
     BAD_LOGIN_PASSWORD(2, "Bad combination login/password"),
-    INCORRECT_INPUT(3, "Input data incorrect: ");
+    INCORRECT_INPUT(3, "Input data incorrect: "),
+    INVITATION_SEND(4, "Invitations was send");
 
     private final int code;
     private final String msg;

@@ -30,7 +30,7 @@ public class ApplicantRegisterController extends AbstractController {
 
                 applicantService.registerApplicant(validateApplicant(params), validateUser(params));
 
-                request.setAttribute("successMessage",
+                request.setAttribute("message",
                         "Applicant created successfully. Confirm your email.");
                 forward("register");
 
@@ -38,7 +38,7 @@ public class ApplicantRegisterController extends AbstractController {
                 logger.error(e.getMessage());
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } catch (BusinessException e) {
-                request.setAttribute("errorMessage",
+                request.setAttribute("message",
                         e.getMessage() + e.getCode().getMsg());
                 forward("register");
             }

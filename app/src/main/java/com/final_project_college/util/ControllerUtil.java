@@ -6,6 +6,7 @@ import com.final_project_college.exception.BusinessException;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class ControllerUtil {
@@ -32,7 +33,6 @@ public class ControllerUtil {
         return Specialty.builder()
                 .specialtyName(validate(getValue("specialtyName", parameters), "specialtyName", string))
                 .governmentOrder(Integer.parseInt(validate(getValue("governmentOrder", parameters), "governmentOrder", integer)))
-                .contractOrder(Integer.parseInt(validate(getValue("contractOrder", parameters), "contractOrder", integer)))
                 .build();
     }
 
@@ -58,15 +58,8 @@ public class ControllerUtil {
                 .build();
     }
 
-    public static ApplicationStatus validateApplicationStatus(Map<String, String[]> parameters) {
-        return ApplicationStatus.builder()
-                .statusName(validate(getValue("statusName", parameters), "statusName", string))
-                .build();
-    }
-
     public static Application validateApplication(Map<String, String[]> parameters) {
         return Application.builder()
-                .contract(Boolean.parseBoolean(validate(getValue("contract", parameters), "contract", string)))
                 .specialtyId(Integer.parseInt(validate(getValue("specialtyId", parameters), "specialtyId", integer)))
                 .build();
     }
@@ -79,6 +72,16 @@ public class ControllerUtil {
                 .build();
     }
 
+    public static long getValidId(String param) {
+        try {
+            return Long.parseLong(Optional.ofNullable(param).orElseThrow(() ->
+                    new BusinessException("Invalid id",
+                            BusinessCode.INCORRECT_INPUT)));
+        }catch (NumberFormatException e){
+            throw new BusinessException("Invalid id",
+                    BusinessCode.INCORRECT_INPUT);
+        }
+    }
 
     private static String validate(String param, String msg, Pattern pattern) {
         if (pattern.matcher(param).find()) return param;

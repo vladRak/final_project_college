@@ -20,6 +20,25 @@ public class MySqlSchoolExamDao extends MySqlAbstractDao implements SchoolExamDa
     }
 
     @Override
+    public Optional<SchoolExam> getSchoolExamByEmail(String email) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("school_exam.findByApplicantEmail"),
+                    (rs) -> SchoolExam.builder()
+                            .id(rs.getLong("id"))
+                            .rating(rs.getShort("rating"))
+                            .examSubjectId(rs.getLong("exam_subject_id"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .build(),
+                    email
+            ).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public List<SchoolExam> getSchoolExamsByApplicantId(long applicantId) {
         return null;
     }

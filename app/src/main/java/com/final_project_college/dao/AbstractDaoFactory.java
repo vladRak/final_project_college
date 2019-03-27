@@ -8,8 +8,6 @@ public interface AbstractDaoFactory {
 
     ApplicationDao getApplicationDao(ConnectionWrapper connection);
 
-    ApplicationStatusDao getApplicationStatusDao(ConnectionWrapper connection);
-
     EntranceExamDao getEntranceExamDao(ConnectionWrapper connection);
 
     ExamSubjectDao getExamSubjectDao(ConnectionWrapper connection);

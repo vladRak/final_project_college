@@ -32,12 +32,12 @@
   </servlet-mapping>
 
   <listener>
-    <listener-class>com.final_project.web.listener.AppServletContextListener</listener-class>
+    <listener-class>com.final_project_college.web.listener.AppServletContextListener</listener-class>
   </listener>
 
-  <listener>
-    <listener-class>com.final_project.web.listener.SessionCounterListener</listener-class>
-  </listener>
+  <!--<listener>-->
+    <!--<listener-class>com.final_project.web.listener.SessionCounterListener</listener-class>-->
+  <!--</listener>-->
 
   <error-page>
     <error-code>500</error-code>
@@ -61,7 +61,7 @@
 
   <servlet>
     <servlet-name>DispatcherServlet</servlet-name>
-    <servlet-class>com.final_project.web.servlet.DispatcherServlet</servlet-class>
+    <servlet-class>com.final_project_college.web.servlet.DispatcherServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>DispatcherServlet</servlet-name>
@@ -70,7 +70,7 @@
 
   <filter>
     <filter-name>EncodingRequestFilter</filter-name>
-    <filter-class>com.final_project.web.filter.EncodingRequestFilter</filter-class>
+    <filter-class>com.final_project_college.web.filter.EncodingRequestFilter</filter-class>
   </filter>
 
   <filter-mapping>
@@ -80,7 +80,7 @@
 
   <filter>
     <filter-name>EncodingResponseFilter</filter-name>
-    <filter-class>com.final_project.web.filter.EncodingResponseFilter</filter-class>
+    <filter-class>com.final_project_college.web.filter.EncodingResponseFilter</filter-class>
   </filter>
 
   <filter-mapping>
@@ -90,7 +90,7 @@
 
   <filter>
     <filter-name>XSSFilter</filter-name>
-    <filter-class>com.final_project.web.filter.XSSFilter</filter-class>
+    <filter-class>com.final_project_college.web.filter.XSSFilter</filter-class>
   </filter>
 
   <filter-mapping>
@@ -100,7 +100,7 @@
 
   <filter>
     <filter-name>AuthFilter</filter-name>
-    <filter-class>com.final_project.web.filter.AuthFilter</filter-class>
+    <filter-class>com.final_project_college.web.filter.AuthFilter</filter-class>
   </filter>
 
   <filter-mapping>

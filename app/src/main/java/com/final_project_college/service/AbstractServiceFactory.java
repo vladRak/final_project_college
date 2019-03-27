@@ -6,8 +6,6 @@ public interface AbstractServiceFactory {
 
     ApplicationService getApplicationService();
 
-    ApplicationStatusService getApplicationStatusService();
-
     EntranceExamService getEntranceExamService();
 
     RoleService getRoleService();

@@ -15,7 +15,7 @@ public enum ConnectionPoolImpl implements ConnectionPool {
 
     INSTANCE;
 
-    private static final String DATASOURCE_NAME = "jdbc/exposition_calendar";
+    private static final String DATASOURCE_NAME = "jdbc/college_db";
     private static DataSource dataSource;
     private static final Logger logger = LoggerFactory.getLogger(ConnectionPoolImpl.class);
 

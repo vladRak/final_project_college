@@ -11,14 +11,13 @@ import com.final_project_college.exception.BusinessException;
 import com.final_project_college.exception.DataAccessCode;
 import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.service.ApplicationService;
-import com.final_project_college.util.ApplicationStatusName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.final_project_college.util.ServiceValidator.*;
+import static com.final_project_college.util.ServiceUtil.*;
 
 public class ApplicationServiceImpl extends AbstractService implements ApplicationService {
 
@@ -53,13 +52,6 @@ public class ApplicationServiceImpl extends AbstractService implements Applicati
                     specialtyDao.getEntranceExams(application.getSpecialtyId()));
 
             application.setApplicantId(applicant.getId());
-            application.setStatusId(
-                    daoFactory
-                            .getApplicationStatusDao(connection)
-                            .getByName(ApplicationStatusName.NEW.name())
-                            .orElseThrow(() -> new DataAccessException(DataAccessCode.INTERNAL_EXCEPTION))
-                            .getId());
-
 
             Application created = applicationDao.save(application)
                     .orElseThrow(() -> new DataAccessException(DataAccessCode.SQL_EXCEPTION));
@@ -68,6 +60,36 @@ public class ApplicationServiceImpl extends AbstractService implements Applicati
 
             return created;
 
+        } catch (SQLException e) {
+            try {
+                transactionManager.rollback();
+            } catch (SQLException e1) {
+                logger.error(e.getMessage());
+                throw new DataAccessException(e1, DataAccessCode.TRANSACTION_EXCEPTION);
+            }
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new DataAccessException(e, DataAccessCode.TRANSACTION_EXCEPTION);
+        }
+    }
+
+    @Override
+    public boolean deleteApplication(long applicationId, String applicantEmail) throws DataAccessException {
+        try (ConnectionWrapper connection = transactionManager.getConnection()) {
+
+            transactionManager.beginTransaction();
+            boolean deleted;
+            ApplicationDao applicationDao = daoFactory.getApplicationDao(connection);
+
+            if(validApplicationId(
+                    applicationDao.getApplicationsByApplicantEmail(applicantEmail),
+                    applicationId))
+                deleted = applicationDao.delete(applicationId);
+            else deleted = false;
+
+            transactionManager.commit();
+
+            return deleted;
         } catch (SQLException e) {
             try {
                 transactionManager.rollback();

@@ -2,6 +2,7 @@ package com.final_project_college.dao.impl.mysql;
 
 import com.final_project_college.dao.SpecialtyDao;
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
+import com.final_project_college.domain.dto.Application;
 import com.final_project_college.domain.dto.EntranceExam;
 import com.final_project_college.domain.dto.Specialty;
 import com.final_project_college.domain.dto.User;
@@ -36,15 +37,14 @@ public class MySqlSpecialtyDao extends MySqlAbstractDao implements SpecialtyDao 
     }
 
     @Override
-    public List<User> getUsersToSendInvitations(long specialtyId, int governmentOrder) {
+    public List<Application> getApplicationsToSendInvitations(long specialtyId, int governmentOrder) {
         try {
             return queryManager.select(
-                    queryManager.getQuery("specialty.getUsersToInvitation"),
-                    (rs) -> User.builder()
+                    queryManager.getQuery("specialty.getApplicationsToInvitation"),
+                    (rs) -> Application.builder()
                             .id(rs.getLong("id"))
-                            .firstName(rs.getString("first_name"))
-                            .lastName(rs.getString("last_name"))
-                            .eMail(rs.getString("e_mail"))
+                            .applicantId(rs.getLong("applicant_id"))
+                            .specialtyId(rs.getLong("specialty_id"))
                             .build(),
                     specialtyId,
                     governmentOrder

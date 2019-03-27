@@ -7,8 +7,6 @@ import org.reflections.Reflections;
 
 import java.util.*;
 
-import static java.util.Objects.nonNull;
-
 public enum WebControllerHandler {
 
     INSTANCE;

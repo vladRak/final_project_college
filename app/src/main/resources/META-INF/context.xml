@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
-    <Resource name="jdbc/exposition_calendar"
+    <Resource name="jdbc/college_db"
               auth="Container"
               type="javax.sql.DataSource"
               username="root"
               password="root"
               driverClassName="com.mysql.cj.jdbc.Driver"
-              url="jdbc:mysql://localhost:3306/college"
+              url="jdbc:mysql://localhost:3306/college_db"
               connectionProperties="characterEncoding=UTF-8;useSSL=false"
               validationQuery="select 1"
               maxTotal="10"

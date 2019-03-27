@@ -20,6 +20,26 @@ public class MySqlUserDao extends MySqlAbstractDao implements UserDao {
     }
 
     @Override
+    public List<User> getUsersToInvitation(long specialtyId, int governmentOrder) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("user.getUsersToInvitation"),
+                    (rs) -> User.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .eMail(rs.getString("e_mail"))
+                            .build(),
+                    specialtyId,
+                    governmentOrder
+            );
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
     public Optional<User> getByEmail(String email) {
         try {
             return queryManager.select(

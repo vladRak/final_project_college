@@ -6,4 +6,6 @@ import com.final_project_college.exception.DataAccessException;
 public interface ApplicationService extends GenericService<Application>{
 
     Application addApplication(Application application, String email) throws DataAccessException;
+
+    boolean deleteApplication(long applicationId, String applicantEmail) throws DataAccessException;
 }

@@ -10,7 +10,6 @@ import com.final_project_college.exception.DataAccessCode;
 import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.service.UserService;
 import com.final_project_college.util.HashingUtil;
-import com.final_project_college.util.mail.MailSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.final_project_college.util.ServiceValidator.createLinkToVerify;
-import static com.final_project_college.util.ServiceValidator.getNewHash;
+import static com.final_project_college.util.ServiceUtil.*;
 
 public class UserServiceImpl extends AbstractService implements UserService {
 
@@ -69,10 +67,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
             transactionManager.commit();
 
-            new MailSender().sendMail(created.getEMail(),
-                    "Please confirm email",
-                    createLinkToVerify(contextMapper.getServletContext().getContextPath(), hash)
-                            .orElseThrow(() -> new DataAccessException(DataAccessCode.INTERNAL_EXCEPTION)));
+            sendVerificationMail(created.getEMail(),contextMapper.getServletContext().getContextPath(),hash);
 
             return created;
         } catch (SQLException e) {

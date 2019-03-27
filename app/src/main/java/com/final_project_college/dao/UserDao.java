@@ -22,4 +22,6 @@ public interface UserDao extends GenericDao<User> {
     List<User> getUsersByRoleId(long roleId);
 
     List<User> getUnverifiedUsersByRoleId(long roleId);
+
+    List<User> getUsersToInvitation(long specialtyId, int governmentOrder);
 }

@@ -16,11 +16,6 @@ public class MySqlDaoFactory implements AbstractDaoFactory {
     }
 
     @Override
-    public ApplicationStatusDao getApplicationStatusDao(ConnectionWrapper connection) {
-        return new MySqlApplicationStatusDao(connection);
-    }
-
-    @Override
     public EntranceExamDao getEntranceExamDao(ConnectionWrapper connection) {
         return new MySqlEntranceExamDao(connection);
     }

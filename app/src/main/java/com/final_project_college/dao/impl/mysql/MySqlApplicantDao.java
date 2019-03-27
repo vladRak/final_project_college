@@ -4,6 +4,7 @@ import com.final_project_college.dao.ApplicantDao;
 import com.final_project_college.dao.jdbc.impl.ConnectionWrapper;
 import com.final_project_college.domain.dto.Applicant;
 import com.final_project_college.domain.dto.SchoolExam;
+import com.final_project_college.domain.dto.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,27 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
 
     public MySqlApplicantDao(ConnectionWrapper connection) {
         super(connection);
+    }
+
+    @Override
+    public Optional<User> getUser(long applicantId) {
+        try {
+            return queryManager.select(
+                    queryManager.getQuery("applicant.findUser"),
+                    (rs) -> User.builder()
+                            .id(rs.getLong("id"))
+                            .firstName(rs.getString("first_name"))
+                            .lastName(rs.getString("last_name"))
+                            .eMail(rs.getString("e_mail"))
+                            .verified(rs.getBoolean("verified"))
+                            .blocked(rs.getBoolean("blocked"))
+                            .roleId(rs.getLong("role_id"))
+                            .build(),
+                    applicantId).stream().findFirst();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override

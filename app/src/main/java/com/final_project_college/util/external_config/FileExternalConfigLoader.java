@@ -1,5 +1,6 @@
 package com.final_project_college.util.external_config;
 
+import com.final_project_college.exception.BusinessCode;
 import com.final_project_college.exception.BusinessException;
 import com.final_project_college.exception.DataAccessException;
 import com.final_project_college.exception.DataAccessCode;
@@ -50,14 +51,14 @@ public enum FileExternalConfigLoader implements ExternalConfigLoader {
                 DataAccessCode.EXTERNAL_CONFIG_EXCEPTION);
         else if (property == null)
             throw new BusinessException("This config does not exist in loaded file.",
-                    DataAccessCode.EXTERNAL_CONFIG_EXCEPTION);
+                    BusinessCode.INCORRECT_INPUT);
         else return property;
     }
 
     public void addConfig(final String key, final String value) {
         if ((properties.getProperty(key) != null)) {
             throw new BusinessException("The key is already exist in the configs.",
-                    DataAccessCode.EXTERNAL_CONFIG_EXCEPTION);
+                    BusinessCode.INCORRECT_INPUT);
         } else {
             properties.setProperty(key, value);
         }
