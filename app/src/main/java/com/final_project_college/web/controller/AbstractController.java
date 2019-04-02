@@ -34,8 +34,7 @@ public abstract class AbstractController implements Controller {
         this.context = servletContext;
         this.request = servletRequest;
         this.response = servletResponse;
-//        this.session = request.getSession();
-        this.session = request.getSession(false);
+        this.session = request.getSession();
         serviceFactory = (ServiceFactory) context.getAttribute("serviceFactory");
     }
 

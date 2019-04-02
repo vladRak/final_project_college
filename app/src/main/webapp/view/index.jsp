@@ -16,7 +16,7 @@
 <body id="page-top">
 <ul>
     <c:choose>
-        <c:when test="${sessionScope.role != 'ANONYMOUS'}">
+        <c:when test="${sessionScope.role == 'ADMIN' || sessionScope.role == 'APPLICANT'}">
             <li class="nav-item">
                 <a class="nav-link js-scroll-trigger"
                    href="${pageContext.request.contextPath}/app?controller=home">Home</a>

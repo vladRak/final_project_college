@@ -58,11 +58,9 @@ public class AuthFilter implements Filter {
             moveToMenu(req, res, role);
 
         } else {
-
+            session.setAttribute("role", "ANONYMOUS");
             moveToMenu(req, res, WebRole.ANONYMOUS.name());
         }
-
-        System.out.println("Sessions: " + SessionCounterListener.getTotalActiveSession());
     }
 
     /**
@@ -80,6 +78,7 @@ public class AuthFilter implements Filter {
 
         System.out.println("Req URI: " + requestURI);
         System.out.println("Req controller: " + requestCommand);
+        System.out.println(role);
         System.out.println(req.getLocale().toString());
 
         if(role.equals(WebRole.ANONYMOUS.name()) && nonNull(requestCommand)){

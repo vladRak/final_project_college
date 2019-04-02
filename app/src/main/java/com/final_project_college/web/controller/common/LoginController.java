@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 @WebController("login")
-@Credentials("ANONYMOUS")
 public class LoginController extends AbstractController {
 
     @Override

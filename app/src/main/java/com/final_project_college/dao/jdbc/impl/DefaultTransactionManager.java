@@ -22,21 +22,11 @@ public class DefaultTransactionManager implements TransactionManager {
     }
 
     public ConnectionWrapper getConnection() throws SQLException {
+
         connections.set(
                 Optional.ofNullable(connections.get())
                         .orElse(connectionPool.getConnection()));
         return connections.get();
-
-
-//        ConnectionWrapper connectionWrapper = connections.get();
-//        if (nonNull(connectionWrapper)) {
-//            return connectionWrapper;
-//        } else {
-//            connectionWrapper = connectionPool.getConnection();
-//            connectionWrapper.setAutoCommit(true);
-//            connections.set(connectionWrapper);
-//            return connectionWrapper;
-//        }
     }
 
     public void beginTransaction() throws SQLException {

@@ -16,13 +16,13 @@ public class CredentialsValidator {
         if (getAllowed(controller).contains(checkRole(role))) {
             return true;
         } else throw new AnnotationException(
-                "Unsupported controller for credentials",
+                "Unsupported controller for credentials1",
                 AnnotationExceptionCode.CREDENTIALS_EXCEPTION);
     }
 
     private String checkRole(String role) {
         return Optional.ofNullable(role).orElseThrow(() -> new AnnotationException(
-                "Unsupported controller for credentials",
+                "Unsupported controller for credentials2",
                 AnnotationExceptionCode.CREDENTIALS_EXCEPTION));
     }
 

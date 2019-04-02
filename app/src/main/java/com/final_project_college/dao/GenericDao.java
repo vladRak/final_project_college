@@ -3,7 +3,7 @@ package com.final_project_college.dao;
 import java.util.List;
 import java.util.Optional;
 
-public interface GenericDao<T> {
+public interface GenericDao<K extends Number,T> {
 
     int numberOfRows();
 
@@ -11,7 +11,7 @@ public interface GenericDao<T> {
 
     List<T> getAll();
 
-    Optional<T> get(long id);
+    Optional<T> get(K id);
 
     boolean delete(long id);
 

@@ -44,7 +44,7 @@ public class MySqlApplicantDao extends MySqlAbstractDao implements ApplicantDao 
 
     @Override
     public List<Applicant> getApplicantsByName(String name) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
